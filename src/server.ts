@@ -3,6 +3,7 @@ import helmet from "helmet";
 import { CorsConfig } from "./config/cors";
 import { CustomErrorHandler } from "./middlewares/custom-error.middleware";
 import { healthRouter } from "./routes/health.route";
+import { companyRouter } from "./routes/company.route";
 
 const app = express()
 
@@ -11,6 +12,7 @@ CorsConfig(app)
 
 
 app.use("/api/health", healthRouter);
+app.use("/api/company", companyRouter);
 
 app.get('/', (_req, res) => {
     res.json({

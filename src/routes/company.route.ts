@@ -9,24 +9,23 @@ import {
     deleteCompanyValidator
 } from '../validator/company.validator';
 
-const router = Router();
+export const companyRouter = Router();
 
 // Create company
-router.post('/', createCompanyValidator, validate, companyController.createCompany);
+companyRouter.post('/', createCompanyValidator, validate, companyController.createCompany);
 
 // Get all companies
-router.get('/', companyController.getAllCompanies);
+companyRouter.get('/', companyController.getAllCompanies);
 
 // Get company by ID
-router.get('/:id', getCompanyByIdValidator, validate, companyController.getCompanyById);
+companyRouter.get('/:id', getCompanyByIdValidator, validate, companyController.getCompanyById);
 
 // Find company by email or name
-router.get('/find/:identifier', findOneCompanyValidator, validate, companyController.findOneCompany);
+companyRouter.get('/find/:identifier', findOneCompanyValidator, validate, companyController.findOneCompany);
 
 // Update company
-router.put('/:id', updateCompanyValidator, validate, companyController.updateCompany);
+companyRouter.put('/:id', updateCompanyValidator, validate, companyController.updateCompany);
 
 // Delete company
-router.delete('/:id', deleteCompanyValidator, validate, companyController.deleteCompany);
+companyRouter.delete('/:id', deleteCompanyValidator, validate, companyController.deleteCompany);
 
-export default router;
