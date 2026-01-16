@@ -20,7 +20,7 @@ app.get('/', (_req, res) => {
         features: {
         },
         endpoints: {
-            health: '/health',
+            health: '/api/health',
         }
     });
 });
