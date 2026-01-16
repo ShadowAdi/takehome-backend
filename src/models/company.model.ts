@@ -25,6 +25,7 @@ export const companySchema = new mongoose.Schema<ICompany>({
     password: {
         type: String,
         required: true,
+        select:false
     },
     company_description: {
         type: String,

@@ -7,61 +7,61 @@ import { Company } from "../models/company.model";
 import { hashPassword } from "../utils/password";
 
 class CompanyService {
-  async createCompany(payload: CreateCompanyDTO) {
-    try {
-      const exists = await Company.findOne({
-        $or: [
-          { company_email: payload.company_email },
-          { company_name: payload.company_name }
-        ]
-      });
+    async createCompany(payload: CreateCompanyDTO) {
+        try {
+            const exists = await Company.findOne({
+                $or: [
+                    { company_email: payload.company_email },
+                    { company_name: payload.company_name }
+                ]
+            });
 
-      if (exists) {
-        throw new AppError("Company already exists", 409);
-      }
+            if (exists) {
+                throw new AppError("Company already exists", 409);
+            }
 
-      const hashedPassword = await hashPassword(payload.password);
+            const hashedPassword = await hashPassword(payload.password);
 
-      const company = await Company.create({
-        ...payload,
-        password: hashedPassword
-      });
+            const company = await Company.create({
+                ...payload,
+                password: hashedPassword
+            });
 
-      return {
-        id: company._id,
-        company_name: company.company_name,
-        company_email: company.company_email,
-        company_description: company.company_description,
-        createdAt: company.createdAt
-      };
+            return {
+                id: company._id,
+                company_name: company.company_name,
+                company_email: company.company_email,
+                company_description: company.company_description,
+                createdAt: company.createdAt
+            };
 
-    } catch (error: any) {
-      logger.error(`Failed to create company service: ${error.message}`);
-      console.error(`Failed to create company service: ${error.message}`);
-      throw error instanceof AppError
-        ? error
-        : new AppError("Internal Server Error", 500);
+        } catch (error: any) {
+            logger.error(`Failed to create company service: ${error.message}`);
+            console.error(`Failed to create company service: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
     }
-  }
 
-   async getAllCompany() {
-    try {
-      const companies = await Company.find({
-      });
+    async getAllCompany() {
+        try {
+            const companies = await Company.find({
+            });
 
-      return {
-        companies,
-        totalCompanies:companies.length
-      };
+            return {
+                companies,
+                totalCompanies: companies.length
+            };
 
-    } catch (error: any) {
-      logger.error(`Failed to get all company service: ${error.message}`);
-      console.error(`Failed to get all company service: ${error.message}`);
-      throw error instanceof AppError
-        ? error
-        : new AppError("Internal Server Error", 500);
+        } catch (error: any) {
+            logger.error(`Failed to get all company service: ${error.message}`);
+            console.error(`Failed to get all company service: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
     }
-  }
 }
 
 export const companyService = new CompanyService();
