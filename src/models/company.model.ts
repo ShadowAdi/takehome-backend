@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { IAddress, ICompany } from "./interfaces/company.interface";
 
-const AddressSchema = new mongoose.Schema({
+const AddressSchema = new mongoose.Schema<IAddress>({
     street: { type: String, trim: true },
     city: { type: String, trim: true },
     state: { type: String, trim: true },
@@ -8,7 +9,7 @@ const AddressSchema = new mongoose.Schema({
     country: { type: String, trim: true }
 }, { _id: false });
 
-export const companySchema = new mongoose.Schema({
+export const companySchema = new mongoose.Schema<ICompany>({
     company_name: {
         type: String,
         required: true,
@@ -59,4 +60,4 @@ export const companySchema = new mongoose.Schema({
     timestamps: true
 })
 
-export const Company = mongoose.models.Company || mongoose.model("Company", companySchema)
+export const Company = mongoose.models.Company || mongoose.model<ICompany>("Company", companySchema)
