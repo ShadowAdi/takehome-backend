@@ -10,7 +10,9 @@ export const initializeConnection = async () => {
   }
   try {
     await mongoose
-      .connect(DB_URL!)
+      .connect(DB_URL!,{
+        dbName:"takehome-db"
+      })
       .then(() => {
         logger.info(`Connected Successfully`);
         console.log(`Connected Successfully`);
