@@ -5,6 +5,7 @@ import { CreateCompanyDTO } from "../types/company/company-create.dto";
 import { AppError } from "../utils/AppError";
 import { Company } from "../models/company.model";
 import { hashPassword } from "../utils/password";
+import { UpdateCompanyDTO } from "../types/company/company-update.dto";
 
 class CompanyService {
     async createCompany(payload: CreateCompanyDTO) {
@@ -117,6 +118,24 @@ class CompanyService {
         } catch (error: any) {
             logger.error(`Failed to delete company with id is: ${companyId} and error is: ${error.message}`);
             console.error(`Failed to delete company with id is: ${companyId} and error is: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
+    async updateCompany(companyId: string, updateCompanyPayload: UpdateCompanyDTO) {
+        try {
+            await this.findById(companyId)
+            const updateCompany = await Company.findByIdAndUpdate(companyId, {
+                ...updateCompanyPayload
+            }, {
+                new: true
+            })
+            return updateCompany
+        } catch (error: any) {
+            logger.error(`Failed to update company with id is: ${companyId} and error is: ${error.message}`);
+            console.error(`Failed to update company with id is: ${companyId} and error is: ${error.message}`);
             throw error instanceof AppError
                 ? error
                 : new AppError("Internal Server Error", 500);

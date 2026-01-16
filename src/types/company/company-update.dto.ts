@@ -2,9 +2,7 @@ import { IAddress } from "../../models/interfaces/company.interface";
 
 export interface UpdateCompanyDTO {
   company_name?: string;
-  company_email?: string;
-  password?: string;
-
+  
   company_description?: string;
   address?: IAddress;
 
