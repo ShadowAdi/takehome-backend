@@ -24,7 +24,7 @@ companyRouter.get('/:id', getCompanyByIdValidator, validate, companyController.g
 companyRouter.get('/find/:identifier', findOneCompanyValidator, validate, companyController.findOneCompany);
 
 // Update company
-companyRouter.put('/:id', updateCompanyValidator, validate, companyController.updateCompany);
+companyRouter.patch('/:id', updateCompanyValidator, validate, companyController.updateCompany);
 
 // Delete company
 companyRouter.delete('/:id', deleteCompanyValidator, validate, companyController.deleteCompany);
