@@ -81,6 +81,31 @@ class CompanyService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    async findOneCompany(exists: string) {
+        try {
+            const existsCompany = await Company.findOne({
+                $or: [
+                    { company_email: exists },
+                    { company_name: exists },
+                ],
+            });
+
+            if (!existsCompany) {
+                console.error(`Company does not exists ${exists}`);
+                logger.error(`Company does not exists  ${exists}`);
+                throw new AppError("Company does not exists", 409);
+            }
+
+            return existsCompany
+        } catch (error: any) {
+            logger.error(`Failed to get company with email or name:${exists} and error is: ${error.message}`);
+            console.error(`Failed to get company with email or name:${exists} and error is: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
 
 export const companyService = new CompanyService();
