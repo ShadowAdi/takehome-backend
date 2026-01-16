@@ -9,6 +9,8 @@ const app = express()
 
 app.use(helmet())
 CorsConfig(app)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 
 app.use("/api/health", healthRouter);
