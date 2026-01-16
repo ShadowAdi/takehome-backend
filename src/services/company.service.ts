@@ -43,6 +43,25 @@ class CompanyService {
         : new AppError("Internal Server Error", 500);
     }
   }
+
+   async getAllCompany() {
+    try {
+      const companies = await Company.find({
+      });
+
+      return {
+        companies,
+        totalCompanies:companies.length
+      };
+
+    } catch (error: any) {
+      logger.error(`Failed to get all company service: ${error.message}`);
+      console.error(`Failed to get all company service: ${error.message}`);
+      throw error instanceof AppError
+        ? error
+        : new AppError("Internal Server Error", 500);
+    }
+  }
 }
 
 export const companyService = new CompanyService();
