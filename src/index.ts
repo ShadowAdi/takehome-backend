@@ -6,6 +6,9 @@ import { logger } from "./config/logger";
 import "./config/dotenv"
 import { shutdown } from "./utils/graceful-shutdown";
 
+
+import "./models/index"
+
 const server = http.createServer(app)
 
 const startServer = async () => {
