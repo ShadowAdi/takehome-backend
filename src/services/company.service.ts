@@ -106,6 +106,22 @@ class CompanyService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    async deleteCompany(companyId: string) {
+        try {
+            await this.findById(companyId)
+
+
+            await Company.findByIdAndDelete(companyId)
+            return "Company Deleted Successfully"
+        } catch (error: any) {
+            logger.error(`Failed to delete company with id is: ${companyId} and error is: ${error.message}`);
+            console.error(`Failed to delete company with id is: ${companyId} and error is: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
 
 export const companyService = new CompanyService();
