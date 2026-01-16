@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import { CorsConfig } from "./config/cors";
+import { CustomErrorHandler } from "./middlewares/custom-error.middleware";
 
 const app = express()
 
@@ -19,5 +20,7 @@ app.get('/', (_req, res) => {
         }
     });
 });
+
+app.use(CustomErrorHandler)
 
 export default app
