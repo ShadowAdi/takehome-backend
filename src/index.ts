@@ -19,5 +19,17 @@ const startServer = async () => {
 
 startServer()
 
-process.on("SIGINT", shutdown);  
+process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
+
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception:", err);
+    logger.error(`Uncaught Exception: ${err}`)
+    process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+    console.error("Unhandled Rejection:", reason);
+    logger.error(`Uncaught Rejection: ${reason}`)
+    process.exit(1);
+});
