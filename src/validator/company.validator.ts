@@ -30,7 +30,6 @@ export const createCompanyValidator = [
         .withMessage('Company description must be between 10 and 1000 characters')
         .trim(),
 
-    // Optional fields
     body('address.street')
         .optional()
         .isLength({ min: 1, max: 200 })
