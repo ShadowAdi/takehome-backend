@@ -12,11 +12,13 @@ class CompanyService {
             const exists = await Company.findOne({
                 $or: [
                     { company_email: payload.company_email },
-                    { company_name: payload.company_name }
-                ]
+                    { company_name: payload.company_name },
+                ],
             });
 
             if (exists) {
+                console.error(`Company already exists ${exists}`);
+                logger.error(`Company already exists  ${exists}`);
                 throw new AppError("Company already exists", 409);
             }
 
@@ -24,7 +26,7 @@ class CompanyService {
 
             const company = await Company.create({
                 ...payload,
-                password: hashedPassword
+                password: hashedPassword,
             });
 
             return {
@@ -32,9 +34,8 @@ class CompanyService {
                 company_name: company.company_name,
                 company_email: company.company_email,
                 company_description: company.company_description,
-                createdAt: company.createdAt
+                createdAt: company.createdAt,
             };
-
         } catch (error: any) {
             logger.error(`Failed to create company service: ${error.message}`);
             console.error(`Failed to create company service: ${error.message}`);
@@ -46,17 +47,35 @@ class CompanyService {
 
     async getAllCompany() {
         try {
-            const companies = await Company.find({
-            });
+            const companies = await Company.find({});
 
             return {
                 companies,
-                totalCompanies: companies.length
+                totalCompanies: companies.length,
             };
-
         } catch (error: any) {
             logger.error(`Failed to get all company service: ${error.message}`);
             console.error(`Failed to get all company service: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
+    async findById(companyId: string) {
+        try {
+            const company = await Company.findById(companyId);
+
+            if (!company) {
+                console.error(`Company already exists ${company}`);
+                logger.error(`Company already exists  ${company}`);
+                throw new AppError("Company already exists", 409);
+            }
+
+            return company
+        } catch (error: any) {
+            logger.error(`Failed to get company with id:${companyId} and error is: ${error.message}`);
+            console.error(`Failed to get company with id:${companyId} and error is: ${error.message}`);
             throw error instanceof AppError
                 ? error
                 : new AppError("Internal Server Error", 500);
