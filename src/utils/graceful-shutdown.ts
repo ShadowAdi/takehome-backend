@@ -10,8 +10,8 @@ export const shutdown = async (server: Server, signal: string) => {
         console.log(`HTTP server closed`)
         logger.info(`HTTP server closed`)
 
-        disconnectDB()
-        
+        await disconnectDB()
+
         setTimeout(() => {
             console.error("Force shutdown after 10s");
             process.exit(1);
