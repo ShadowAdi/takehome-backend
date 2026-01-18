@@ -9,7 +9,7 @@ class JobService {
             const exists = await Job.findOne({
                 jobTitle: payload.jobTitle
             });
-            
+
             const now = new Date();
 
             if (exists && now > exists.lastDateToApply) {
@@ -33,6 +33,22 @@ class JobService {
         } catch (error: any) {
             logger.error(`Failed to create job service: ${error.message}`);
             console.error(`Failed to create job service: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
+    async getAllJobs() {
+        try {
+            const jobs = await Job.find()
+            return {
+                jobs,
+                totalJobs: jobs.length
+            }
+        } catch (error: any) {
+            logger.error(`Failed to get all jobs service: ${error.message}`);
+            console.error(`Failed to get all jobs service: ${error.message}`);
             throw error instanceof AppError
                 ? error
                 : new AppError("Internal Server Error", 500);
