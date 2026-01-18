@@ -9,13 +9,7 @@ class JobService {
             const exists = await Job.findOne({
                 jobTitle: payload.jobTitle
             });
-
-            if (exists) {
-                console.error(`Job already exists ${exists}`);
-                logger.error(`Job already exists  ${exists}`);
-                throw new AppError("Job already exists", 409);
-            }
-
+            
             const now = new Date();
 
             if (exists && now > exists.lastDateToApply) {
