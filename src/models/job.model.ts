@@ -7,44 +7,59 @@ export const jobSchema = new mongoose.Schema<IJob>({
         ref: 'Company',
         required: true
     },
+
     jobTitle: {
         type: String,
         required: true,
         trim: true
     },
+
     jobDescription: {
         type: String,
         required: true,
         trim: true
     },
+
     jobRole: {
         type: String,
         required: true,
         enum: ["frontend", "backend", "fullstack", "mobile", "data", "embed", "other"],
         default: "other"
     },
-    seniorityLevel: {
-        type: String,
-        required: true,
-        enum: ["intern", "junior", "mid", "senior"],
-        default: "junior"
+
+    experience: {
+        minMonths: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        maxMonths: {
+            type: Number,
+            required: true,
+            min: 0
+        }
     },
+
     techStack: {
         type: [String],
         required: true
     },
+
     employmentType: {
         type: String,
         enum: ["internship", "full-time", "contract", "part-time"],
         default: "full-time"
     },
+
     location: {
         type: String,
         trim: true
     },
+
     lastDateToApply: {
         type: Date
     },
+
     status: {
         type: String,
         enum: ["draft", "active", "archived"],
@@ -54,4 +69,4 @@ export const jobSchema = new mongoose.Schema<IJob>({
     timestamps: true
 });
 
-export const Job = mongoose.models.Job || mongoose.model<IJob>("Job", jobSchema);
+export const Job = mongoose.models.Job || mongoose.model("Job", jobSchema);

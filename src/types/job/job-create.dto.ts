@@ -2,7 +2,10 @@ export interface CreateJobDTO {
   jobTitle: string;
   jobDescription: string;
   jobRole: "frontend" | "backend" | "fullstack" | "mobile" | "data" | "embed" | "other";
-  seniorityLevel: "intern" | "junior" | "mid" | "senior";
+  experience: {
+    minMonths: number;
+    maxMonths: number;
+  }
   techStack: string[];
   employmentType?: "internship" | "full-time" | "contract" | "part-time";
   location?: string;

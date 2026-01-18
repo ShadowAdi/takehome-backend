@@ -7,16 +7,19 @@ export interface IJob extends Document {
   jobDescription: string;
 
   jobRole:
-    | "frontend"
-    | "backend"
-    | "fullstack"
-    | "mobile"
-    | "data"
-    | "embed"
-    | "other"
-    | string;
+  | "frontend"
+  | "backend"
+  | "fullstack"
+  | "mobile"
+  | "data"
+  | "embed"
+  | "other"
+  | string;
 
-  seniorityLevel: "intern" | "junior" | "mid" | "senior" | string;
+  experience: {
+    minMonths: number;
+    maxMonths: number;
+  }
 
   techStack: string[];
 
