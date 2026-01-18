@@ -151,4 +151,37 @@ class JobService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    async updateStatus(jobId: string, status: string) {
+        try {
+            const getJob = await Job.findById(jobId)
+            if (!getJob) {
+                logger.error(`Job with id: ${jobId} not found`);
+                console.error(`Job with id: ${jobId} not found`);
+                throw new AppError(`Job with id: ${jobId} not found`, 500);
+            }
+
+            if (getJob.status === status) {
+                logger.error(`Job has already same status`);
+                console.error(`Job has already same status`);
+                throw new AppError(`Job has already same status`, 500);
+            }
+
+            const updatedJob = await Job.findByIdAndUpdate(
+                jobId,
+                { status },
+                {
+                    new: true
+                }
+            );
+
+            return updatedJob;
+        } catch (error: any) {
+            logger.error(`Failed to delete job by id:${jobId}  error: ${error.message}`);
+            console.error(`Failed to delete job by id:${jobId} error: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
