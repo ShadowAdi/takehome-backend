@@ -54,4 +54,17 @@ class JobService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    async getJob(jobId: string) {
+        try {
+            const job = await Job.findById(jobId)
+            return job
+        } catch (error: any) {
+            logger.error(`Failed to get job by id:${jobId}  error: ${error.message}`);
+            console.error(`Failed to get job by id:${jobId} error: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
