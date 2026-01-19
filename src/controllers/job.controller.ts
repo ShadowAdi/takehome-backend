@@ -4,7 +4,7 @@ import { jobService } from "../services/job.service";
 import { logger } from "../config/logger";
 
 class JobControllerClass {
-   async createJob(req: Request, res: Response, next: NextFunction) {
+    async createJob(req: Request, res: Response, next: NextFunction) {
         try {
             const payload: CreateJobDTO = req.body;
             const job = await jobService.createJob(payload);
