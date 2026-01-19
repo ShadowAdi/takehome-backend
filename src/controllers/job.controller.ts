@@ -1,5 +1,26 @@
+import { NextFunction, Request, Response } from "express";
+import { CreateJobDTO } from "../types/job/job-create.dto";
+import { jobService } from "../services/job.service";
+import { logger } from "../config/logger";
+
 class JobControllerClass {
-   
+   async createJob(req: Request, res: Response, next: NextFunction) {
+        try {
+            const payload: CreateJobDTO = req.body;
+            const job = await jobService.createJob(payload);
+
+            res.status(201).json({
+                success: true,
+                message: "Job created successfully",
+                data: job
+            });
+        } catch (error) {
+            logger.error(`Failed to create job: ${error}`)
+            console.error(`Failed to create job: ${error}`)
+            next(error);
+        }
+    }
+
 }
 
 export const JobController=new JobControllerClass()
