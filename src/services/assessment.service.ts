@@ -17,124 +17,71 @@ class AssessmentService {
                 {
                     messages: [
                         {
-                            content: `
-                            You are a senior engineering hiring manager who regularly designs take-home assessments.
+                            content: `You are a senior engineering hiring manager who designs creative take-home assessments.
 
-                            Your task is to DESIGN ONE take-home technical assessment for the given job role.
+DESIGN ONE technical assessment for this job:
 
-                            INPUT DATA:
+JOB: ${JSON.stringify(job, null, 2)}
 
-                            JOB DETAILS (existing job):
-                            ${JSON.stringify(job, null, 2)}
+RECRUITER NOTES: ${instructionForAi || "None"}
 
-                            ADDITIONAL INSTRUCTIONS FROM RECRUITER:
-                            ${instructionForAi || "No additional instructions provided."}
+=== RULES ===
+1. Output ONLY valid JSON (no markdown, no comments)
+2. NO generic projects (todo/weather/calculator apps)
+3. Create product-like features from real SaaS workflows
+4. Make it engaging - candidate should think creatively
+5. Match difficulty to job experience level
 
-                            ---
+=== TIME GUIDELINES (STRICT) ===
+expectedDurationHours: Realistic focused work time (3-8 hours typical)
+submissionDeadlineDays calculation:
+- 2-4 hours → 1 day
+- 4-6 hours → 2 days  
+- 6-8 hours → 2-3 days
+- 8-10 hours → 3 days
+Give reasonable deadlines, not excessive buffer time.
 
-                            CRITICAL RULES (DO NOT BREAK):
-                            1. Respond ONLY with valid JSON
-                            2. JSON must STRICTLY match the schema described below
-                            3. Do NOT add explanations, comments, or markdown
-                            4. Do NOT include status field
-                            5. Assume candidate is honest and skilled for the role level
-                            6. Difficulty must match the experience implied by the job
-                            7. Expected duration must reflect actual effort, not padding
-                            8. Deadline must be logically derived from expectedDurationHours
+=== AI USAGE POLICY ===
+In constraints field, specify AI tool usage:
+- For senior roles: "AI tools (ChatGPT, Copilot) allowed for boilerplate. Core logic must be original."
+- For mid-level: "AI tools allowed for research/syntax. Implementation must demonstrate understanding."
+- For junior: "Limited AI usage. Focus on learning and problem-solving."
+Always specify to avoid ambiguity.
 
-                            ---
+=== DESIGN PRINCIPLES ===
+- Creative, non-trivial problems
+- Clear success criteria
+- Minimal setup friction
+- Encourage thoughtful solutions over speed
+- Backend only if job requires it
 
-                            NON-NEGOTIABLE DESIGN CONSTRAINTS:
-                            - DO NOT suggest generic projects unless explicitly requested:
-                            ❌ Todo apps
-                            ❌ Weather apps
-                            ❌ Calculator apps
-                            ❌ Counter/demo projects
-                            - Prefer product-like features inspired by real SaaS workflows
-                            - Task should feel like a small slice of a real product, not a demo
+=== JSON SCHEMA ===
+{
+  "title": "string (creative, specific)",
+  "problem_description": "string (clear context, what to build, why it matters)",
+  "allowedTechStack": "string (align with job stack)",
+  "instructions": "string (step-by-step, numbered)",
+  "constraints": "string (include AI policy, technical limits, time scope)",
+  "expectedDurationHours": number,
+  "submissionDeadlineDays": number,
+  "submissionRequirements": {
+    "githubUrl": {"required": true, "description": "Public repo with clean code"},
+    "deployedUrl": {"required": boolean, "description": "string"},
+    "videoDemo": {"required": boolean, "description": "string", "platform": "Loom/YouTube"},
+    "documentation": {"required": true, "description": "README with setup, approach, decisions"},
+    "otherUrls": [],
+    "additionalInfo": {"required": false, "placeholder": "Challenges faced, trade-offs made", "maxLength": 300}
+  },
+  "limitations": "string (what's provided, what's out of scope)",
+  "evaluation": "string (specific criteria with weights: Code Quality 30%, Feature Completeness 25%, UX 20%, Architecture 15%, Documentation 10%)"
+}
 
-                            ---
-
-                            TIME & DEADLINE LOGIC (IMPORTANT):
-                            - expectedDurationHours = actual focused work time
-                            - submissionDeadlineDays should follow this logic:
-                            • 2–4 hours  → 1 day
-                            • 4–6 hours  → 1–2 days
-                            • 6–10 hours → 2–3 days
-                            • Never give extra days without justification
-
-                            ---
-
-                            ASSESSMENT DESIGN GUIDELINES:
-                            - Focus on practical, UI-focused, real-world tasks
-                            - No complex backend logic unless job demands it
-                            - API integration and basic state handling are preferred
-                            - Constraints should discourage overengineering
-                            - Evaluation criteria must be objective and explicit
-                            - Submission requirements should be minimal and reasonable
-
-                            ---
-
-                            OUTPUT JSON SCHEMA (STRICT):
-
-                            {
-                            "title": string,
-                            "problem_description": string,
-                            "allowedTechStack": string,
-                            "instructions": string,
-                            "constraints": string,
-                            "expectedDurationHours": number,
-                            "submissionDeadlineDays": number,
-                            "submissionRequirements": {
-                                "githubUrl": {
-                                "required": boolean,
-                                "description": string
-                                },
-                                "deployedUrl": {
-                                "required": boolean,
-                                "description": string
-                                },
-                                "videoDemo": {
-                                "required": boolean,
-                                "description": string,
-                                "platform": string
-                                },
-                                "documentation": {
-                                "required": boolean,
-                                "description": string
-                                },
-                                "otherUrls": [
-                                {
-                                    "required": boolean,
-                                    "description": string,
-                                    "label": string
-                                }
-                                ],
-                                "additionalInfo": {
-                                "required": boolean,
-                                "placeholder": string,
-                                "maxLength": number
-                                }
-                            },
-                            "limitations": string,
-                            "evaluation": string
-                            }
-
-                            ---
-
-                            IMPORTANT:
-                            - allowedTechStack must align with job techStack
-                            - expectedDurationHours should usually be between 3–8
-                            - Deadline must not exceed what is logically necessary
-                            - Evaluation must explain how submissions will be judged
-
-                            Respond ONLY with JSON.
-`,
+Respond with ONLY the JSON object.`,
                             role: "user"
-
                         },
                     ],
                     model: 'sarvam-m',
+                    max_tokens: 2000,
                 },
                 {
                     headers: {
@@ -148,12 +95,26 @@ class AssessmentService {
 
             const rawContent = response.data?.choices?.[0]?.message?.content;
             if (!rawContent) {
-                throw new Error('No summary in Sarvam response');
+                throw new Error('No content in Sarvam response');
             }
 
             console.log("raw content ", rawContent)
 
-            return rawContent
+            // Parse and validate JSON
+            let parsedData: CreateAssessmentAIDto;
+            try {
+                parsedData = JSON.parse(rawContent);
+            } catch (parseError) {
+                logger.error(`Failed to parse AI response as JSON: ${parseError}`);
+                throw new Error('AI returned invalid JSON');
+            }
+
+            // Validate required fields
+            if (!parsedData.title || !parsedData.problem_description || !parsedData.expectedDurationHours) {
+                throw new Error('AI response missing required fields');
+            }
+
+            return parsedData;
         } catch (error) {
             logger.error(`Failed to call the sarvam ai and create the assessment: ${error}`)
             console.error(`Failed to call the sarvam ai and create the assessment: ${error}`)
@@ -213,10 +174,41 @@ class AssessmentService {
                 throw new AppError(`Cant create assessment if job does not exist in the first place`, 401)
             }
 
-            const generatedOutput = await this.generateAssessmentWithSarvam(instructionForAi, exists)
+            // Generate assessment with AI
+            const aiGeneratedData = await this.generateAssessmentWithSarvam(instructionForAi, exists);
 
+            // Check if assessment already exists
+            const isAlreadyExist = await Assessment.findOne({
+                title: aiGeneratedData.title.toLowerCase().trim(),
+                jobId: jobId
+            });
 
-            return generatedOutput
+            if (isAlreadyExist) {
+                logger.error(`Assessment with similar title already exists`);
+                console.error(`Assessment with similar title already exists`);
+                throw new AppError(`Assessment with similar title already exists. Try updating or use different title.`, 409);
+            }
+
+            const uniqueJobId = crypto.randomUUID().slice(-6);
+
+            // Save to database
+            const assessment = await Assessment.create({
+                title: aiGeneratedData.title,
+                problemDescription: aiGeneratedData.problem_description,
+                allowedTechStack: aiGeneratedData.allowedTechStack,
+                instructions: aiGeneratedData.instructions,
+                constraints: aiGeneratedData.constraints,
+                expectedDurationHours: aiGeneratedData.expectedDurationHours,
+                submissionDeadlineDays: aiGeneratedData.submissionDeadlineDays,
+                submissionRequirements: aiGeneratedData.submissionRequirements,
+                limitations: aiGeneratedData.limitations,
+                evaluation: aiGeneratedData.evaluation,
+                jobId: jobId,
+                uniqueId: uniqueJobId,
+                companyId: companyId
+            });
+
+            return assessment;
         } catch (error: any) {
             logger.error(`Failed to create assessment by ai service: ${error.message}`);
             console.error(`Failed to create assessment by ai service: ${error.message}`);
