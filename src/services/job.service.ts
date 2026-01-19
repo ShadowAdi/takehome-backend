@@ -157,6 +157,24 @@ class JobService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    async getAllJobsByCompanyId(companyId: string) {
+        try {
+            const jobs = await Job.find({
+                createdBy: companyId
+            })
+            return {
+                jobs,
+                totalJobs: jobs.length
+            }
+        } catch (error: any) {
+            logger.error(`Failed to get all jobs by company id service: ${error.message}`);
+            console.error(`Failed to get all jobs by company id service: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
 
 export const jobService = new JobService();
