@@ -28,16 +28,8 @@ export const jobSchema = new mongoose.Schema<IJob>({
     },
 
     experience: {
-        minMonths: {
-            type: Number,
-            required: true,
-            min: 0
-        },
-        maxMonths: {
-            type: Number,
-            required: true,
-            min: 0
-        }
+        type: String,
+        required: true,
     },
 
     techStack: {
@@ -62,7 +54,7 @@ export const jobSchema = new mongoose.Schema<IJob>({
 
     status: {
         type: String,
-        enum: ["draft", "open", "archived","closed"],
+        enum: ["draft", "open", "archived", "closed"],
         default: "open"
     }
 }, {

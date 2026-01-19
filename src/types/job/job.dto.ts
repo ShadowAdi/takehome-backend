@@ -4,10 +4,7 @@ export interface GetJobDTO {
   jobTitle: string;
   jobDescription: string;
   jobRole: string;
-  experience: {
-    minMonths: number;
-    maxMonths: number;
-  };
+  experience:string;
   techStack: string[];
   employmentType?: string;
   location?: string;
@@ -21,10 +18,7 @@ export interface GetJobsQueryDTO {
   page?: number;
   limit?: number;
   jobRole?: string;
-  experience?: {
-    minMonths?: number;
-    maxMonths?: number;
-  }
+  experience?: string
   employmentType?: string;
   location?: string;
   status?: string;

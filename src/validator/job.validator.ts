@@ -25,25 +25,9 @@ export const createJobValidator = [
         .notEmpty()
         .withMessage('Job role is required'),
 
-    body('experience.minMonths')
+    body('experience')
         .notEmpty()
-        .withMessage('Minimum experience in months is required')
-        .isInt({ min: 0, max: 600 })
-        .withMessage('Minimum experience must be between 0 and 600 months')
-        .toInt(),
-
-    body('experience.maxMonths')
-        .notEmpty()
-        .withMessage('Maximum experience in months is required')
-        .isInt({ min: 0, max: 600 })
-        .withMessage('Maximum experience must be between 0 and 600 months')
-        .toInt()
-        .custom((value: any, { req }: any) => {
-            if (value < req.body.experience?.minMonths) {
-                throw new Error('Maximum experience cannot be less than minimum experience');
-            }
-            return true;
-        }),
+        .withMessage('Experience is required'),
 
     body('techStack')
         .notEmpty()
@@ -91,29 +75,11 @@ export const updateJobValidator = [
         .trim(),
 
     body('jobRole')
-        .optional()
-        .isIn(['frontend', 'backend', 'fullstack', 'mobile', 'data', 'embed', 'other'])
-        .withMessage('Job role must be one of: frontend, backend, fullstack, mobile, data, embed, other'),
+        .optional(),
 
-    body('experience.minMonths')
-        .optional()
-        .isInt({ min: 0, max: 600 })
-        .withMessage('Minimum experience must be between 0 and 600 months')
-        .toInt(),
-
-    body('experience.maxMonths')
-        .optional()
-        .isInt({ min: 0, max: 600 })
-        .withMessage('Maximum experience must be between 0 and 600 months')
-        .toInt()
-        .custom((value: any, { req }: any) => {
-            if (req.body.experience?.minMonths !== undefined && value !== undefined) {
-                if (value < req.body.experience.minMonths) {
-                    throw new Error('Maximum experience cannot be less than minimum experience');
-                }
-            }
-            return true;
-        }),
+    body('experience')
+        .notEmpty()
+        .withMessage('Experience is required'),
 
     body('techStack')
         .optional()
@@ -155,8 +121,8 @@ export const updateJobValidator = [
 
     body('status')
         .optional()
-        .isIn(['draft', 'active', 'archived'])
-        .withMessage('Status must be one of: draft, active, archived'),
+        .isIn(['draft', 'open', 'archived',"closed"])
+        .withMessage('Status must be one of: draft, open, archived'),
 ];
 
 export const getJobByIdValidator = [
@@ -179,6 +145,6 @@ export const updateJobStatusValidator = [
     body('status')
         .notEmpty()
         .withMessage('Status is required')
-        .isIn(['draft', 'active', 'archived'])
-        .withMessage('Status must be one of: draft, active, archived'),
+        .isIn(['draft', 'open', 'archived', "closed"])
+        .withMessage('Status must be one of: draft, open, archived'),
 ];

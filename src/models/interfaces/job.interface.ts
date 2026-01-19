@@ -16,10 +16,7 @@ export interface IJob extends Document {
   | "other"
   | string;
 
-  experience: {
-    minMonths: number;
-    maxMonths: number;
-  }
+  experience: string
 
   techStack: string[];
 
