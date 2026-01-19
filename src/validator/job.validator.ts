@@ -1,4 +1,4 @@
-import { body, param } from 'express-validator';
+import { body, param } from 'express-validator/lib/middlewares/validation-chain-builders.js';
 
 export const createJobValidator = [
     body('createdBy')
@@ -40,7 +40,7 @@ export const createJobValidator = [
         .isInt({ min: 0, max: 600 })
         .withMessage('Maximum experience must be between 0 and 600 months')
         .toInt()
-        .custom((value, { req }) => {
+        .custom((value: any, { req }: any) => {
             if (value < req.body.experience?.minMonths) {
                 throw new Error('Maximum experience cannot be less than minimum experience');
             }
@@ -76,7 +76,7 @@ export const createJobValidator = [
         .isISO8601()
         .withMessage('Last date to apply must be a valid date')
         .toDate()
-        .custom((value) => {
+        .custom((value: any) => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (value < today) {
@@ -119,7 +119,7 @@ export const updateJobValidator = [
         .isInt({ min: 0, max: 600 })
         .withMessage('Maximum experience must be between 0 and 600 months')
         .toInt()
-        .custom((value, { req }) => {
+        .custom((value: any, { req }: any) => {
             if (req.body.experience?.minMonths !== undefined && value !== undefined) {
                 if (value < req.body.experience.minMonths) {
                     throw new Error('Maximum experience cannot be less than minimum experience');
@@ -157,7 +157,7 @@ export const updateJobValidator = [
         .isISO8601()
         .withMessage('Last date to apply must be a valid date')
         .toDate()
-        .custom((value) => {
+        .custom((value: any) => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (value < today) {

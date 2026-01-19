@@ -1,4 +1,4 @@
-import { body, param } from 'express-validator';
+import { body, param } from 'express-validator/lib/middlewares/validation-chain-builders.js';
 
 export const createCompanyValidator = [
     body('company_name')
