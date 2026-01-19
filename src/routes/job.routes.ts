@@ -16,5 +16,3 @@ jobRouter.patch('/update/status', updateJobStatusValidator, validate, JobControl
 jobRouter.patch('/:id', updateJobValidator, validate, JobController.updateJob);
 
 jobRouter.delete('/:id', deleteJobValidator, validate, JobController.deleteJob);
-
-
