@@ -193,7 +193,7 @@ export const createAssessmentValidator = [
 ];
 
 export const updateAssessmentValidator = [
-    param('id')
+    param('assessmentId')
         .isMongoId()
         .withMessage('Please provide a valid assessment ID'),
 
