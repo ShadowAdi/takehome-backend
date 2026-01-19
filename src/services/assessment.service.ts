@@ -49,6 +49,7 @@ class AssessmentService {
         }
     }
 
+    
     async getAllAssessmentsByJob(jobId: string) {
         try {
             const exists = await jobService.getJob(jobId);
