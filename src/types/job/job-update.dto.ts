@@ -1,7 +1,7 @@
 export interface UpdateJobDTO {
   jobTitle?: string;
   jobDescription?: string;
-  jobRole?: "frontend" | "backend" | "fullstack" | "mobile" | "data" | "embed" | "other";
+  jobRole?: "frontend" | "backend" | "fullstack" | "mobile" | "data" | "embed" | "other" | string;
   experience?: {
     minMonths?: number;
     maxMonths?: number;
