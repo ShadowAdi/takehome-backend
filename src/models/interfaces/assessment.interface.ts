@@ -6,6 +6,9 @@ export interface IAssessment extends Document {
     instructions?: string;
     constraints?: string;
 
+
+    companyId: string;
+
     expectedDurationHours?: number;
     submissionDeadlineDays?: number;
 
