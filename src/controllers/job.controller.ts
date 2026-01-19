@@ -37,6 +37,27 @@ class JobControllerClass {
         }
     }
 
+    async getJobById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            if (Array.isArray(id)) {
+                throw new Error("Invalid identifier parameter");
+            }
+            const job = await jobService.getJob(id);
+
+            res.status(200).json({
+                success: true,
+                message: "job retrieved successfully",
+                data: job
+            });
+        } catch (error) {
+            logger.error(`Failed to get job and error is: ${error}`)
+            console.error(`Failed to get job and error is: ${error}`)
+            next(error);
+        }
+    }
+
+
 }
 
 export const JobController = new JobControllerClass()
