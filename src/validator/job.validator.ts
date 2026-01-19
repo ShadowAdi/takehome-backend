@@ -23,9 +23,7 @@ export const createJobValidator = [
 
     body('jobRole')
         .notEmpty()
-        .withMessage('Job role is required')
-        .isIn(['frontend', 'backend', 'fullstack', 'mobile', 'data', 'embed', 'other'])
-        .withMessage('Job role must be one of: frontend, backend, fullstack, mobile, data, embed, other'),
+        .withMessage('Job role is required'),
 
     body('experience.minMonths')
         .notEmpty()
@@ -73,17 +71,6 @@ export const createJobValidator = [
 
     body('lastDateToApply')
         .optional()
-        .isISO8601()
-        .withMessage('Last date to apply must be a valid date')
-        .toDate()
-        .custom((value: any) => {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (value < today) {
-                throw new Error('Last date to apply cannot be in the past');
-            }
-            return true;
-        }),
 ];
 
 export const updateJobValidator = [
