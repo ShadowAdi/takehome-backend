@@ -2,4 +2,4 @@ class JobControllerClass {
    
 }
 
-export const JobController=JobControllerClass()
+export const JobController=new JobControllerClass()
