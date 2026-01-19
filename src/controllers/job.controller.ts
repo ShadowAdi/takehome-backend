@@ -118,6 +118,26 @@ class JobControllerClass {
       next(error);
     }
   }
+
+  async getAllJobsByCompanyId(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      if (Array.isArray(id)) {
+        throw new Error("Invalid identifier parameter");
+      }
+      const { jobs, totalJobs } = await jobService.getAllJobsByCompanyId(id);
+      res.status(200).json({
+        success: true,
+        message: "Jobs retrieved successfully",
+        jobs: jobs,
+        totalJobs: totalJobs,
+      });
+    } catch (error) {
+      logger.error(`Failed to get all jobs: ${error}`);
+      console.error(`Failed to get all job: ${error}`);
+      next(error);
+    }
+  }
 }
 
 export const JobController = new JobControllerClass();
