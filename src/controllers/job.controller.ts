@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { CreateJobDTO } from "../types/job/job-create.dto";
 import { jobService } from "../services/job.service";
 import { logger } from "../config/logger";
+import { UpdateJobDTO } from "../types/job/job-update.dto";
 
 class JobControllerClass {
     async createJob(req: Request, res: Response, next: NextFunction) {
@@ -57,6 +58,26 @@ class JobControllerClass {
         }
     }
 
+    async updateJob(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            if (Array.isArray(id)) {
+                throw new Error("Invalid identifier parameter");
+            }
+            const updatePayload: UpdateJobDTO = req.body;
+            const updatedJob = await jobService.updateJob(id, updatePayload);
+
+            res.status(200).json({
+                success: true,
+                message: "Job updated successfully",
+                data: updatedJob
+            });
+        } catch (error) {
+            logger.error(`Failed to update company and error is: ${error}`)
+            console.error(`Failed to update company and error is: ${error}`)
+            next(error);
+        }
+    }
 
 }
 
