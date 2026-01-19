@@ -1,3 +1,5 @@
-class JobController {
+class JobControllerClass {
    
 }
+
+export const JobController=JobControllerClass()
