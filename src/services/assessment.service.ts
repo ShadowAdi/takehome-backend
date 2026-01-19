@@ -110,6 +110,21 @@ class AssessmentService {
         }
     }
 
+    async getSingleAssessmentByUniqueId(assessmentUniqueId: string) {
+        try {
+            const assessment = await Assessment.findOne({
+                uniqueId: assessmentUniqueId
+            });
+            return assessment
+        } catch (error: any) {
+            logger.error(`Failed to get assessments: ${error.message}`);
+            console.error(`Failed to get assessments: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
     async deleteAssignment(assessmentId: string, companyId: string) {
         try {
 
