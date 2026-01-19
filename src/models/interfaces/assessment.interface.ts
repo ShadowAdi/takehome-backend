@@ -1,0 +1,55 @@
+export interface IAssessment extends Document {
+    title: string;
+    jobId: string;
+    problem_description: string;
+    allowedTechStack?: string;
+    instructions?: string;
+    constraints?: string;
+
+    expectedDurationHours?: number;
+    submissionDeadlineDays?: number;
+
+    submissionRequirements?: {
+        githubUrl?: {
+            required: boolean;
+            description: string;
+        };
+
+        deployedUrl?: {
+            required: boolean;
+            description: string;
+        };
+
+        videoDemo?: {
+            required: boolean;
+            platform: 'loom' | 'youtube' | 'any';
+            description: string;
+        };
+
+        documentation?: {
+            required: boolean;
+            description: string;
+        };
+
+        otherUrls?: {
+            label: string;
+            required: boolean;
+            description: string;
+        }[];
+
+        additionalInfo?: {
+            required: boolean;
+            placeholder: string;
+            maxLength: number;
+        };
+    };
+
+    limitations?: string;
+
+    evaluation?: string;
+
+    status: "draft" | "active" | "closed";
+
+    createdAt: Date;
+    updatedAt: Date;
+}
