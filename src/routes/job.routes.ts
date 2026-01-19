@@ -9,6 +9,8 @@ jobRouter.post('/', createJobValidator, validate, JobController.createJob);
 
 jobRouter.get('/', JobController.getAllJobs);
 
+jobRouter.get('/by-company/:companyId', JobController.getAllJobsByCompanyId);
+
 jobRouter.get('/:id', getJobByIdValidator, validate, JobController.getJobById);
 
 jobRouter.patch('/status/:id', updateJobStatusValidator, validate, JobController.updateJobStatus);
