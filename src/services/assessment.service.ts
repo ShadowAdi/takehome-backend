@@ -18,7 +18,7 @@ class AssessmentService {
                     messages: [
                         {
                             content: `
-                            You are a senior engineering hiring manager.
+                            You are a senior engineering hiring manager who regularly designs take-home assessments.
 
                             Your task is to DESIGN ONE take-home technical assessment for the given job role.
 
@@ -38,18 +38,40 @@ class AssessmentService {
                             3. Do NOT add explanations, comments, or markdown
                             4. Do NOT include status field
                             5. Assume candidate is honest and skilled for the role level
-                            6. Assessment must be realistic and industry-relevant
-                            7. Difficulty must match the experience implied by the job
-                            8. Expected duration should be achievable without burnout
+                            6. Difficulty must match the experience implied by the job
+                            7. Expected duration must reflect actual effort, not padding
+                            8. Deadline must be logically derived from expectedDurationHours
+
+                            ---
+
+                            NON-NEGOTIABLE DESIGN CONSTRAINTS:
+                            - DO NOT suggest generic projects unless explicitly requested:
+                            ❌ Todo apps
+                            ❌ Weather apps
+                            ❌ Calculator apps
+                            ❌ Counter/demo projects
+                            - Prefer product-like features inspired by real SaaS workflows
+                            - Task should feel like a small slice of a real product, not a demo
+
+                            ---
+
+                            TIME & DEADLINE LOGIC (IMPORTANT):
+                            - expectedDurationHours = actual focused work time
+                            - submissionDeadlineDays should follow this logic:
+                            • 2–4 hours  → 1 day
+                            • 4–6 hours  → 1–2 days
+                            • 6–10 hours → 2–3 days
+                            • Never give extra days without justification
 
                             ---
 
                             ASSESSMENT DESIGN GUIDELINES:
-                            - Problem should test real-world skills for the role
-                            - Use the job's techStack unless recruiter instructions override it
+                            - Focus on practical, UI-focused, real-world tasks
+                            - No complex backend logic unless job demands it
+                            - API integration and basic state handling are preferred
                             - Constraints should discourage overengineering
-                            - Evaluation criteria must be objective and clear
-                            - Submission requirements must be practical for a take-home task
+                            - Evaluation criteria must be objective and explicit
+                            - Submission requirements should be minimal and reasonable
 
                             ---
 
@@ -101,10 +123,10 @@ class AssessmentService {
                             ---
 
                             IMPORTANT:
-                            - allowedTechStack should be a comma-separated string
-                            - expectedDurationHours should be realistic (148)
-                            - submissionDeadlineDays should be realistic (1–7)
-                            - evaluation must describe HOW the submission will be judged
+                            - allowedTechStack must align with job techStack
+                            - expectedDurationHours should usually be between 3–8
+                            - Deadline must not exceed what is logically necessary
+                            - Evaluation must explain how submissions will be judged
 
                             Respond ONLY with JSON.
 `,
