@@ -35,8 +35,8 @@ class AssessmentControllerClass {
             if (Array.isArray(jobId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { companyId }: { companyId: string } = req.body;
-            const assessment = await assessmentService.createAssessmentByAi(jobId, companyId);
+            const { companyId, instructionForAi }: { companyId: string, instructionForAi: string } = req.body;
+            const assessment = await assessmentService.createAssessmentByAi(jobId, companyId, instructionForAi);
 
             res.status(201).json({
                 success: true,

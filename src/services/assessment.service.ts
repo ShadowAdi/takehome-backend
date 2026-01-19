@@ -7,34 +7,109 @@ import { AppError } from "../utils/AppError";
 import { companyService } from "./company.service";
 import { jobService } from "./job.service";
 import { AI_API_KEY } from "../config/dotenv";
+import { CreateJobDTO } from "../types/job/job-create.dto";
 
 class AssessmentService {
-    private async generateSummaryWithSarvam(articleUrl: string): Promise<any> {
+    private async generateAssessmentWithSarvam(instructionForAi: string, job: CreateJobDTO): Promise<any> {
         try {
             const response = await axios.post(
                 'https://api.sarvam.ai/v1/chat/completions',
                 {
                     messages: [
                         {
-                            content: `Read the news from this URL and provide a response in JSON format with title and content.
+                            content: `
+                            You are a senior engineering hiring manager.
 
-              CRITICAL RULES:
-              1. Use the SAME language as the original article (Gujarati/Hindi/English/etc) - DO NOT translate
-              2. Write naturally like a journalist - NO phrases like "this article", "the news discusses", "according to"
-              3. Start directly with facts - mention key people, events, numbers, and outcomes
-              4. Be informative and engaging - write as if for a news app reader
-              5. Cover: WHO did WHAT, WHEN, WHERE, and WHY/HOW
-              6. Content should be strictly 60 words
-              7. Title should be concise and meaningful
+                            Your task is to DESIGN ONE take-home technical assessment for the given job role.
 
-              URL: ${articleUrl}
+                            INPUT DATA:
 
-              Respond ONLY with JSON in this exact format:
-              {
-                "title": "Your meaningful title here",
-                "content": "Your 60-word summary here"
-              }`,
-                            role: 'user',
+                            JOB DETAILS (existing job):
+                            ${JSON.stringify(job, null, 2)}
+
+                            ADDITIONAL INSTRUCTIONS FROM RECRUITER:
+                            ${instructionForAi || "No additional instructions provided."}
+
+                            ---
+
+                            CRITICAL RULES (DO NOT BREAK):
+                            1. Respond ONLY with valid JSON
+                            2. JSON must STRICTLY match the schema described below
+                            3. Do NOT add explanations, comments, or markdown
+                            4. Do NOT include status field
+                            5. Assume candidate is honest and skilled for the role level
+                            6. Assessment must be realistic and industry-relevant
+                            7. Difficulty must match the experience implied by the job
+                            8. Expected duration should be achievable without burnout
+
+                            ---
+
+                            ASSESSMENT DESIGN GUIDELINES:
+                            - Problem should test real-world skills for the role
+                            - Use the job's techStack unless recruiter instructions override it
+                            - Constraints should discourage overengineering
+                            - Evaluation criteria must be objective and clear
+                            - Submission requirements must be practical for a take-home task
+
+                            ---
+
+                            OUTPUT JSON SCHEMA (STRICT):
+
+                            {
+                            "title": string,
+                            "problem_description": string,
+                            "allowedTechStack": string,
+                            "instructions": string,
+                            "constraints": string,
+                            "expectedDurationHours": number,
+                            "submissionDeadlineDays": number,
+                            "submissionRequirements": {
+                                "githubUrl": {
+                                "required": boolean,
+                                "description": string
+                                },
+                                "deployedUrl": {
+                                "required": boolean,
+                                "description": string
+                                },
+                                "videoDemo": {
+                                "required": boolean,
+                                "description": string,
+                                "platform": string
+                                },
+                                "documentation": {
+                                "required": boolean,
+                                "description": string
+                                },
+                                "otherUrls": [
+                                {
+                                    "required": boolean,
+                                    "description": string,
+                                    "label": string
+                                }
+                                ],
+                                "additionalInfo": {
+                                "required": boolean,
+                                "placeholder": string,
+                                "maxLength": number
+                                }
+                            },
+                            "limitations": string,
+                            "evaluation": string
+                            }
+
+                            ---
+
+                            IMPORTANT:
+                            - allowedTechStack should be a comma-separated string
+                            - expectedDurationHours should be realistic (148)
+                            - submissionDeadlineDays should be realistic (1–7)
+                            - evaluation must describe HOW the submission will be judged
+
+                            Respond ONLY with JSON.
+`,
+                            role: "user"
+
                         },
                     ],
                     model: 'sarvam-m',
@@ -54,26 +129,13 @@ class AssessmentService {
                 throw new Error('No summary in Sarvam response');
             }
 
-            let jsonContent = rawContent.trim();
+            console.log("raw content ", rawContent)
 
-            if (jsonContent.startsWith('```json')) {
-                jsonContent = jsonContent.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-            } else if (jsonContent.startsWith('```')) {
-                jsonContent = jsonContent.replace(/```\n?/g, '');
-            }
-
-            const parsed = JSON.parse(jsonContent.trim());
-
-            if (!parsed.title || !parsed.content) {
-                throw new Error('Invalid JSON structure: missing title or content');
-            }
-
-            return {
-                title: parsed.title,
-                content: parsed.content,
-            };
+            return rawContent
         } catch (error) {
-            logger.error(`Failed to call the sarvam ai: ${error}`)
+            logger.error(`Failed to call the sarvam ai and create the assessment: ${error}`)
+            console.error(`Failed to call the sarvam ai and create the assessment: ${error}`)
+            throw new AppError(`Failed to call the sarvam ai and create the assessment: ${error}`, 400)
         }
     }
 
@@ -119,7 +181,7 @@ class AssessmentService {
         }
     }
 
-    public async createAssessmentByAi(jobId: string, companyId: string) {
+    public async createAssessmentByAi(jobId: string, companyId: string, instructionForAi: string) {
         try {
             const exists = await jobService.getJob(jobId);
 
@@ -129,7 +191,7 @@ class AssessmentService {
                 throw new AppError(`Cant create assessment if job does not exist in the first place`, 401)
             }
 
-            console.log("job ", exists)
+            await this.generateAssessmentWithSarvam(instructionForAi, exists)
 
 
             return "created"
