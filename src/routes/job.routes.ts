@@ -11,7 +11,7 @@ jobRouter.get('/', JobController.getAllJobs);
 
 jobRouter.get('/:id', getJobByIdValidator, validate, JobController.getJobById);
 
-jobRouter.patch('/status/', updateJobStatusValidator, validate, JobController.updateJobStatus);
+jobRouter.patch('/status/:id', updateJobStatusValidator, validate, JobController.updateJobStatus);
 
 jobRouter.patch('/:id', updateJobValidator, validate, JobController.updateJob);
 
