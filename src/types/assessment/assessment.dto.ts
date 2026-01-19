@@ -4,6 +4,7 @@ export interface GetAssessmentPublicDTO {
     id: string;
     title: string;
     jobId: string | Types.ObjectId;
+    companyId: string | Types.ObjectId;
     problem_description: string;
     allowedTechStack?: string;
     instructions?: string;
