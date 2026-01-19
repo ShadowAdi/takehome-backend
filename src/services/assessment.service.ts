@@ -1,7 +1,7 @@
 import axios from "axios";
 import { logger } from "../config/logger";
 import { Assessment } from "../models/assessment.model";
-import { CreateAssessmentDto } from "../types/assessment/assessment-create.dto";
+import { CreateAssessmentAIDto, CreateAssessmentDto } from "../types/assessment/assessment-create.dto";
 import { UpdateAssessmentDto } from "../types/assessment/assessment-update.dto";
 import { AppError } from "../utils/AppError";
 import { companyService } from "./company.service";
@@ -10,7 +10,7 @@ import { AI_API_KEY } from "../config/dotenv";
 import { CreateJobDTO } from "../types/job/job-create.dto";
 
 class AssessmentService {
-    private async generateAssessmentWithSarvam(instructionForAi: string, job: CreateJobDTO): Promise<any> {
+    private async generateAssessmentWithSarvam(instructionForAi: string, job: CreateJobDTO): Promise<CreateAssessmentAIDto> {
         try {
             const response = await axios.post(
                 'https://api.sarvam.ai/v1/chat/completions',
@@ -213,7 +213,7 @@ class AssessmentService {
                 throw new AppError(`Cant create assessment if job does not exist in the first place`, 401)
             }
 
-            await this.generateAssessmentWithSarvam(instructionForAi, exists)
+            const generatedOutput = await this.generateAssessmentWithSarvam(instructionForAi, exists)
 
 
             return "created"
