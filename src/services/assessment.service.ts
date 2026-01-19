@@ -216,7 +216,7 @@ class AssessmentService {
             const generatedOutput = await this.generateAssessmentWithSarvam(instructionForAi, exists)
 
 
-            return "created"
+            return generatedOutput
         } catch (error: any) {
             logger.error(`Failed to create assessment by ai service: ${error.message}`);
             console.error(`Failed to create assessment by ai service: ${error.message}`);
