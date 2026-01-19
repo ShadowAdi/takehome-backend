@@ -21,6 +21,22 @@ class JobControllerClass {
         }
     }
 
+    async getAllJobs(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { jobs, totalJobs } = await jobService.getAllJobs()
+            res.status(200).json({
+                success: true,
+                message: "Jobs retrieved successfully",
+                jobs: jobs,
+                totalJobs: totalJobs
+            });
+        } catch (error) {
+            logger.error(`Failed to get all jobs: ${error}`)
+            console.error(`Failed to get all job: ${error}`)
+            next(error);
+        }
+    }
+
 }
 
-export const JobController=new JobControllerClass()
+export const JobController = new JobControllerClass()
