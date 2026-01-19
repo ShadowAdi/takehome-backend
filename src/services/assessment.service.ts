@@ -1,6 +1,7 @@
 import { logger } from "../config/logger";
 import { Assessment } from "../models/assessment.model";
 import { CreateAssessmentDto } from "../types/assessment/assessment-create.dto";
+import { UpdateAssessmentDto } from "../types/assessment/assessment-update.dto";
 import { AppError } from "../utils/AppError";
 import { companyService } from "./company.service";
 import { jobService } from "./job.service";
@@ -139,7 +140,7 @@ class AssessmentService {
         }
     }
 
-    async updateAssessment(assessmentId: string, companyId: string) {
+    async updateAssessment(assessmentId: string, companyId: string, payload: UpdateAssessmentDto) {
         try {
 
             const assessment = await this.getSingleAssessment(assessmentId);
@@ -156,13 +157,15 @@ class AssessmentService {
                 throw new AppError(`Company id and assessment id are not same`, 402)
             }
 
-            await Assessment.findByIdAndDelete(assessmentId)
+            const assessmentUpdated = await Assessment.findByIdAndUpdate(assessmentId, payload, {
+                new: true
+            })
 
 
-            return "Assessment has been deleted"
+            return assessmentUpdated
         } catch (error: any) {
-            logger.error(`Failed to delete assessments: ${error.message}`);
-            console.error(`Failed to delete assessments: ${error.message}`);
+            logger.error(`Failed to update assessments: ${error.message}`);
+            console.error(`Failed to update assessments: ${error.message}`);
             throw error instanceof AppError
                 ? error
                 : new AppError("Internal Server Error", 500);
