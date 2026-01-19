@@ -49,6 +49,7 @@ export const createAssessmentValidator = [
 
     // Submission Requirements - githubUrl
     body('submissionRequirements.githubUrl.required')
+        .optional()
         .notEmpty()
         .withMessage('GitHub URL requirement flag is required')
         .isBoolean()
@@ -56,6 +57,7 @@ export const createAssessmentValidator = [
         .toBoolean(),
 
     body('submissionRequirements.githubUrl.description')
+        .optional()
         .notEmpty()
         .withMessage('GitHub URL description is required')
         .isLength({ min: 1, max: 500 })
@@ -64,6 +66,7 @@ export const createAssessmentValidator = [
 
     // Submission Requirements - deployedUrl
     body('submissionRequirements.deployedUrl.required')
+        .optional()
         .notEmpty()
         .withMessage('Deployed URL requirement flag is required')
         .isBoolean()
@@ -71,6 +74,7 @@ export const createAssessmentValidator = [
         .toBoolean(),
 
     body('submissionRequirements.deployedUrl.description')
+        .optional()
         .notEmpty()
         .withMessage('Deployed URL description is required')
         .isLength({ min: 1, max: 500 })
@@ -79,6 +83,7 @@ export const createAssessmentValidator = [
 
     // Submission Requirements - videoDemo
     body('submissionRequirements.videoDemo.required')
+        .optional()
         .notEmpty()
         .withMessage('Video demo requirement flag is required')
         .isBoolean()
@@ -86,6 +91,7 @@ export const createAssessmentValidator = [
         .toBoolean(),
 
     body('submissionRequirements.videoDemo.description')
+        .optional()
         .notEmpty()
         .withMessage('Video demo description is required')
         .isLength({ min: 1, max: 500 })
@@ -93,6 +99,7 @@ export const createAssessmentValidator = [
         .trim(),
 
     body('submissionRequirements.videoDemo.platform')
+        .optional()
         .notEmpty()
         .withMessage('Video demo platform is required')
         .isLength({ min: 1, max: 100 })
@@ -101,6 +108,7 @@ export const createAssessmentValidator = [
 
     // Submission Requirements - documentation
     body('submissionRequirements.documentation.required')
+        .optional()
         .notEmpty()
         .withMessage('Documentation requirement flag is required')
         .isBoolean()
@@ -108,6 +116,7 @@ export const createAssessmentValidator = [
         .toBoolean(),
 
     body('submissionRequirements.documentation.description')
+        .optional()
         .notEmpty()
         .withMessage('Documentation description is required')
         .isLength({ min: 1, max: 500 })
@@ -116,6 +125,7 @@ export const createAssessmentValidator = [
 
     // Submission Requirements - otherUrls (array validation)
     body('submissionRequirements.otherUrls')
+        .optional()
         .notEmpty()
         .withMessage('Other URLs is required')
         .isArray()
@@ -141,6 +151,7 @@ export const createAssessmentValidator = [
 
     // Submission Requirements - additionalInfo
     body('submissionRequirements.additionalInfo.required')
+        .optional()
         .notEmpty()
         .withMessage('Additional info requirement flag is required')
         .isBoolean()
@@ -148,6 +159,7 @@ export const createAssessmentValidator = [
         .toBoolean(),
 
     body('submissionRequirements.additionalInfo.placeholder')
+        .optional()
         .notEmpty()
         .withMessage('Additional info placeholder is required')
         .isLength({ min: 1, max: 500 })
@@ -155,6 +167,7 @@ export const createAssessmentValidator = [
         .trim(),
 
     body('submissionRequirements.additionalInfo.maxLength')
+        .optional()
         .notEmpty()
         .withMessage('Additional info max length is required')
         .isInt({ min: 1, max: 10000 })
