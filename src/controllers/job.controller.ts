@@ -121,11 +121,11 @@ class JobControllerClass {
 
   async getAllJobsByCompanyId(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
-      if (Array.isArray(id)) {
+      const { companyId } = req.params;
+      if (Array.isArray(companyId)) {
         throw new Error("Invalid identifier parameter");
       }
-      const { jobs, totalJobs } = await jobService.getAllJobsByCompanyId(id);
+      const { jobs, totalJobs } = await jobService.getAllJobsByCompanyId(companyId);
       res.status(200).json({
         success: true,
         message: "Jobs retrieved successfully",
