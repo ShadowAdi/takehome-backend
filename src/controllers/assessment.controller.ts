@@ -12,7 +12,7 @@ class AssessmentControllerClass {
         try {
             const { jobId } = req.params;
             if (Array.isArray(jobId)) {
-                throw new AppError("Invalid identifier parameter",400);
+                throw new AppError("Invalid identifier parameter", 400);
             }
             const { payload, companyId }: { payload: CreateAssessmentDto, companyId: string } = req.body;
             const assessment = await assessmentService.createAssessment(payload, jobId, companyId);
@@ -29,11 +29,32 @@ class AssessmentControllerClass {
         }
     }
 
+    async createAssessmentByAI(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { jobId } = req.params;
+            if (Array.isArray(jobId)) {
+                throw new AppError("Invalid identifier parameter", 400);
+            }
+            const { companyId }: { companyId: string } = req.body;
+            const assessment = await assessmentService.createAssessmentByAi(jobId, companyId);
+
+            res.status(201).json({
+                success: true,
+                message: "Assessment created successfully",
+                data: assessment,
+            });
+        } catch (error) {
+            logger.error(`Failed to create assessment by ai : ${error}`);
+            console.error(`Failed to create assessment by ai: ${error}`);
+            next(error);
+        }
+    }
+
     async getAllAssessmentsByJob(req: Request, res: Response, next: NextFunction) {
         try {
             const { jobId } = req.params;
             if (Array.isArray(jobId)) {
-                throw new AppError("Invalid identifier parameter",400);
+                throw new AppError("Invalid identifier parameter", 400);
             }
             const assessments = await assessmentService.getAllAssessmentsByJob(jobId);
 
@@ -53,7 +74,7 @@ class AssessmentControllerClass {
         try {
             const { companyId } = req.params;
             if (Array.isArray(companyId)) {
-                throw new AppError("Invalid identifier parameter",400);
+                throw new AppError("Invalid identifier parameter", 400);
             }
             const assessments = await assessmentService.getAllAssessmentsByCompanyId(companyId);
 
@@ -73,7 +94,7 @@ class AssessmentControllerClass {
         try {
             const { assessmentId } = req.params;
             if (Array.isArray(assessmentId)) {
-                throw new AppError("Invalid identifier parameter",400);
+                throw new AppError("Invalid identifier parameter", 400);
             }
             const assessment = await assessmentService.getSingleAssessment(assessmentId);
 
@@ -93,7 +114,7 @@ class AssessmentControllerClass {
         try {
             const { uniqueId } = req.params;
             if (Array.isArray(uniqueId)) {
-                throw new AppError("Invalid identifier parameter",400);
+                throw new AppError("Invalid identifier parameter", 400);
             }
             const assessment = await assessmentService.getSingleAssessmentByUniqueId(uniqueId);
 
@@ -113,7 +134,7 @@ class AssessmentControllerClass {
         try {
             const { assessmentId } = req.params;
             if (Array.isArray(assessmentId)) {
-                throw new AppError("Invalid identifier parameter",400);
+                throw new AppError("Invalid identifier parameter", 400);
             }
             const { companyId }: { companyId: string } = req.body;
             const result = await assessmentService.deleteAssignment(assessmentId, companyId);
@@ -133,7 +154,7 @@ class AssessmentControllerClass {
         try {
             const { assessmentId } = req.params;
             if (Array.isArray(assessmentId)) {
-                throw new AppError("Invalid identifier parameter",400);
+                throw new AppError("Invalid identifier parameter", 400);
             }
             const { payload, companyId }: { payload: UpdateAssessmentDto, companyId: string } = req.body;
             const assessment = await assessmentService.updateAssessment(assessmentId, companyId, payload);

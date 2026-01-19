@@ -119,6 +119,29 @@ class AssessmentService {
         }
     }
 
+    public async createAssessmentByAi(jobId: string, companyId: string) {
+        try {
+            const exists = await jobService.getJob(jobId);
+
+            if (!exists) {
+                logger.error(`Cant create assessment if job does not exist in the first place`)
+                console.error(`Cant create assessment if job does not exist in the first place`)
+                throw new AppError(`Cant create assessment if job does not exist in the first place`, 401)
+            }
+
+            console.log("job ", exists)
+
+
+            return "created"
+        } catch (error: any) {
+            logger.error(`Failed to create assessment by ai service: ${error.message}`);
+            console.error(`Failed to create assessment by ai service: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
     public async getAllAssessmentsByJob(jobId: string) {
         try {
             const exists = await jobService.getJob(jobId);
