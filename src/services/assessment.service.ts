@@ -108,6 +108,36 @@ class AssessmentService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    async deleteAssignment(assessmentId: string, companyId: string) {
+        try {
+
+            const assessment = await this.getSingleAssessment(assessmentId);
+
+            if (!assessment) {
+                logger.error(`Failed to get assessment by id`);
+                console.error(`Failed to get assessment by id`);
+                throw new AppError(`Failed to get assessment by id`, 403)
+            }
+
+            if (String(assessment.companyId) !== companyId) {
+                logger.error(`Company id and assessment id are not same`);
+                console.error(`Company id and assessment id are not same`);
+                throw new AppError(`Company id and assessment id are not same`, 402)
+            }
+
+            await Assessment.findByIdAndDelete(assessmentId)
+
+
+            return "Assessment has been deleted"
+        } catch (error: any) {
+            logger.error(`Failed to delete assessments: ${error.message}`);
+            console.error(`Failed to delete assessments: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
 
 export const assessmentService = new AssessmentService();
