@@ -16,6 +16,8 @@ export const assessmentRouter = Router();
 // Create assessment for a job
 assessmentRouter.post('/job/:jobId', getAssessmentsByJobIdValidator, validate, createAssessmentValidator, validate, AssessmentController.createAssessment);
 
+assessmentRouter.post('/job/generate/:jobId', getAssessmentsByJobIdValidator, validate, createAssessmentValidator, validate, AssessmentController.createAssessment);
+
 // Get all assessments by job ID
 assessmentRouter.get('/job/:jobId', getAssessmentsByJobIdValidator, validate, AssessmentController.getAllAssessmentsByJob);
 

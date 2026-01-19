@@ -3,6 +3,8 @@ import { CreateAssessmentDto } from "../types/assessment/assessment-create.dto";
 import { UpdateAssessmentDto } from "../types/assessment/assessment-update.dto";
 import { assessmentService } from "../services/assessment.service";
 import { logger } from "../config/logger";
+import { jobService } from "../services/job.service";
+import { AppError } from "../utils/AppError";
 
 
 class AssessmentControllerClass {
@@ -10,7 +12,7 @@ class AssessmentControllerClass {
         try {
             const { jobId } = req.params;
             if (Array.isArray(jobId)) {
-                throw new Error("Invalid identifier parameter");
+                throw new AppError("Invalid identifier parameter",400);
             }
             const { payload, companyId }: { payload: CreateAssessmentDto, companyId: string } = req.body;
             const assessment = await assessmentService.createAssessment(payload, jobId, companyId);
@@ -31,7 +33,7 @@ class AssessmentControllerClass {
         try {
             const { jobId } = req.params;
             if (Array.isArray(jobId)) {
-                throw new Error("Invalid identifier parameter");
+                throw new AppError("Invalid identifier parameter",400);
             }
             const assessments = await assessmentService.getAllAssessmentsByJob(jobId);
 
@@ -51,7 +53,7 @@ class AssessmentControllerClass {
         try {
             const { companyId } = req.params;
             if (Array.isArray(companyId)) {
-                throw new Error("Invalid identifier parameter");
+                throw new AppError("Invalid identifier parameter",400);
             }
             const assessments = await assessmentService.getAllAssessmentsByCompanyId(companyId);
 
@@ -71,7 +73,7 @@ class AssessmentControllerClass {
         try {
             const { assessmentId } = req.params;
             if (Array.isArray(assessmentId)) {
-                throw new Error("Invalid identifier parameter");
+                throw new AppError("Invalid identifier parameter",400);
             }
             const assessment = await assessmentService.getSingleAssessment(assessmentId);
 
@@ -91,7 +93,7 @@ class AssessmentControllerClass {
         try {
             const { uniqueId } = req.params;
             if (Array.isArray(uniqueId)) {
-                throw new Error("Invalid identifier parameter");
+                throw new AppError("Invalid identifier parameter",400);
             }
             const assessment = await assessmentService.getSingleAssessmentByUniqueId(uniqueId);
 
@@ -111,7 +113,7 @@ class AssessmentControllerClass {
         try {
             const { assessmentId } = req.params;
             if (Array.isArray(assessmentId)) {
-                throw new Error("Invalid identifier parameter");
+                throw new AppError("Invalid identifier parameter",400);
             }
             const { companyId }: { companyId: string } = req.body;
             const result = await assessmentService.deleteAssignment(assessmentId, companyId);
@@ -131,7 +133,7 @@ class AssessmentControllerClass {
         try {
             const { assessmentId } = req.params;
             if (Array.isArray(assessmentId)) {
-                throw new Error("Invalid identifier parameter");
+                throw new AppError("Invalid identifier parameter",400);
             }
             const { payload, companyId }: { payload: UpdateAssessmentDto, companyId: string } = req.body;
             const assessment = await assessmentService.updateAssessment(assessmentId, companyId, payload);
