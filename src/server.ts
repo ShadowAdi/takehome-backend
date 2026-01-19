@@ -30,6 +30,9 @@ app.get('/', (_req, res) => {
         },
         endpoints: {
             health: '/api/health',
+            assessment: '/api/assessment',
+            company: '/api/company',
+            job: '/api/job',
         }
     });
 });
