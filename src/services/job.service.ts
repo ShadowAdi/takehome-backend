@@ -25,21 +25,8 @@ class JobService {
                 );
             }
 
-            if (payload.experience && payload.experience.maxMonths < payload.experience.minMonths) {
-                logger.error("Min months cant be more than max months", {
-                    minMonths: payload.experience.minMonths,
-                    maxMonths: payload.experience.maxMonths
-                });
-
-                throw new AppError(
-                    "Min months cant be more than max months",
-                    401
-                );
-            }
-
-
             const job = await Job.create({
-                ...payload,
+                ...payload
             });
 
             return job
@@ -97,20 +84,6 @@ class JobService {
                 updateJob.techStack = mergedTechStack;
             }
 
-            if (updateJob.experience &&
-                updateJob.experience.maxMonths !== undefined &&
-                updateJob.experience.minMonths !== undefined &&
-                updateJob.experience.maxMonths < updateJob.experience.minMonths) {
-                logger.error("Min months cant be more than max months", {
-                    minMonths: updateJob.experience.minMonths,
-                    maxMonths: updateJob.experience.maxMonths
-                });
-
-                throw new AppError(
-                    "Min months cant be more than max months",
-                    401
-                );
-            }
             const updatedJob = await Job.findByIdAndUpdate(
                 jobId,
                 updateJob,
