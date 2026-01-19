@@ -95,6 +95,19 @@ class AssessmentService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    async getSingleAssessment(assessmentId: string) {
+        try {
+            const assessment = await Assessment.findById(assessmentId);
+            return assessment
+        } catch (error: any) {
+            logger.error(`Failed to get assessments: ${error.message}`);
+            console.error(`Failed to get assessments: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
 
 export const assessmentService = new AssessmentService();
