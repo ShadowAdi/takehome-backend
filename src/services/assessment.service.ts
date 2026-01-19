@@ -22,10 +22,10 @@ class AssessmentService {
                 jobId: jobId
             })
 
-            if (!isAlreadyExist) {
+            if (isAlreadyExist) {
                 logger.error(`Already Exist try to update previous`)
                 console.error(`Already Exist try to update previous`)
-                throw new AppError(`Already Exist try to update previous`, 401)
+                throw new AppError(`Already Exist try to update previous`, 409)
             }
 
             const uniqueJobId = crypto.randomUUID().slice(-6)
