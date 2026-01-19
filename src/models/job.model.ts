@@ -62,8 +62,8 @@ export const jobSchema = new mongoose.Schema<IJob>({
 
     status: {
         type: String,
-        enum: ["draft", "active", "archived"],
-        default: "draft"
+        enum: ["draft", "open", "archived","closed"],
+        default: "open"
     }
 }, {
     timestamps: true

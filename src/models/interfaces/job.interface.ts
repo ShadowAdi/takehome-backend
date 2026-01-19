@@ -28,7 +28,7 @@ export interface IJob extends Document {
 
   lastDateToApply?: Date;
 
-  status: "draft" | "active" | "archived";
+  status: "draft" | "open" | "archived" | "closed";
 
   createdAt: Date;
   updatedAt: Date;

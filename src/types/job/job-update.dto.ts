@@ -10,5 +10,5 @@ export interface UpdateJobDTO {
   employmentType?: "internship" | "full-time" | "contract" | "part-time";
   location?: string;
   lastDateToApply?: Date;
-  status?: "draft" | "active" | "archived";
+  status?: "draft" | "open" | "archived" | "closed";
 }
