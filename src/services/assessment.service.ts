@@ -2,6 +2,7 @@ import { logger } from "../config/logger";
 import { Assessment } from "../models/assessment.model";
 import { CreateAssessmentDto } from "../types/assessment/assessment-create.dto";
 import { AppError } from "../utils/AppError";
+import { companyService } from "./company.service";
 import { jobService } from "./job.service";
 
 class AssessmentService {
@@ -65,6 +66,30 @@ class AssessmentService {
         } catch (error: any) {
             logger.error(`Failed to get all assessments by jobid service: ${error.message}`);
             console.error(`Failed to get all assessments by jobid service ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
+    async getAllAssessmentsByCompanyId(companyId: string) {
+        try {
+            const exists = await companyService.findById(companyId);
+
+            if (!exists) {
+                logger.error(`Cant get assessment if company does not exist in the first place`)
+                console.error(`Cant get assessment if company does not exist in the first place`)
+                throw new AppError(`Cant get assessment if company does not exist in the first place`, 401)
+            }
+
+            const assessments = await Assessment.find({
+                companyId: companyId,
+            });
+
+            return assessments
+        } catch (error: any) {
+            logger.error(`Failed to get all assessments by company service: ${error.message}`);
+            console.error(`Failed to get all assessments by company service ${error.message}`);
             throw error instanceof AppError
                 ? error
                 : new AppError("Internal Server Error", 500);
