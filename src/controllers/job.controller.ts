@@ -5,99 +5,119 @@ import { logger } from "../config/logger";
 import { UpdateJobDTO } from "../types/job/job-update.dto";
 
 class JobControllerClass {
-    async createJob(req: Request, res: Response, next: NextFunction) {
-        try {
-            const payload: CreateJobDTO = req.body;
-            const job = await jobService.createJob(payload);
+  async createJob(req: Request, res: Response, next: NextFunction) {
+    try {
+      const payload: CreateJobDTO = req.body;
+      const job = await jobService.createJob(payload);
 
-            res.status(201).json({
-                success: true,
-                message: "Job created successfully",
-                data: job
-            });
-        } catch (error) {
-            logger.error(`Failed to create job: ${error}`)
-            console.error(`Failed to create job: ${error}`)
-            next(error);
-        }
+      res.status(201).json({
+        success: true,
+        message: "Job created successfully",
+        data: job,
+      });
+    } catch (error) {
+      logger.error(`Failed to create job: ${error}`);
+      console.error(`Failed to create job: ${error}`);
+      next(error);
     }
+  }
 
-    async getAllJobs(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { jobs, totalJobs } = await jobService.getAllJobs()
-            res.status(200).json({
-                success: true,
-                message: "Jobs retrieved successfully",
-                jobs: jobs,
-                totalJobs: totalJobs
-            });
-        } catch (error) {
-            logger.error(`Failed to get all jobs: ${error}`)
-            console.error(`Failed to get all job: ${error}`)
-            next(error);
-        }
+  async getAllJobs(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { jobs, totalJobs } = await jobService.getAllJobs();
+      res.status(200).json({
+        success: true,
+        message: "Jobs retrieved successfully",
+        jobs: jobs,
+        totalJobs: totalJobs,
+      });
+    } catch (error) {
+      logger.error(`Failed to get all jobs: ${error}`);
+      console.error(`Failed to get all job: ${error}`);
+      next(error);
     }
+  }
 
-    async getJobById(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { id } = req.params;
-            if (Array.isArray(id)) {
-                throw new Error("Invalid identifier parameter");
-            }
-            const job = await jobService.getJob(id);
+  async getJobById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      if (Array.isArray(id)) {
+        throw new Error("Invalid identifier parameter");
+      }
+      const job = await jobService.getJob(id);
 
-            res.status(200).json({
-                success: true,
-                message: "job retrieved successfully",
-                data: job
-            });
-        } catch (error) {
-            logger.error(`Failed to get job and error is: ${error}`)
-            console.error(`Failed to get job and error is: ${error}`)
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        message: "job retrieved successfully",
+        data: job,
+      });
+    } catch (error) {
+      logger.error(`Failed to get job and error is: ${error}`);
+      console.error(`Failed to get job and error is: ${error}`);
+      next(error);
     }
+  }
 
-    async updateJob(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { id } = req.params;
-            if (Array.isArray(id)) {
-                throw new Error("Invalid identifier parameter");
-            }
-            const updatePayload: UpdateJobDTO = req.body;
-            const updatedJob = await jobService.updateJob(id, updatePayload);
+  async updateJob(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      if (Array.isArray(id)) {
+        throw new Error("Invalid identifier parameter");
+      }
+      const updatePayload: UpdateJobDTO = req.body;
+      const updatedJob = await jobService.updateJob(id, updatePayload);
 
-            res.status(200).json({
-                success: true,
-                message: "Job updated successfully",
-                data: updatedJob
-            });
-        } catch (error) {
-            logger.error(`Failed to update company and error is: ${error}`)
-            console.error(`Failed to update company and error is: ${error}`)
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        message: "Job updated successfully",
+        data: updatedJob,
+      });
+    } catch (error) {
+      logger.error(`Failed to update company and error is: ${error}`);
+      console.error(`Failed to update company and error is: ${error}`);
+      next(error);
     }
+  }
 
-    async deleteJob(req: Request, res: Response, next: NextFunction) {
-        try {
-            const { id } = req.params;
-            if (Array.isArray(id)) {
-                throw new Error("Invalid identifier parameter");
-            }
-            const message = await jobService.deleteJob(id);
+  async deleteJob(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      if (Array.isArray(id)) {
+        throw new Error("Invalid identifier parameter");
+      }
+      const message = await jobService.deleteJob(id);
 
-            res.status(200).json({
-                success: true,
-                message
-            });
-        } catch (error) {
-            logger.error(`Failed to delete job and error is: ${error}`)
-            console.error(`Failed to delete job and error is: ${error}`)
-            next(error);
-        }
+      res.status(200).json({
+        success: true,
+        message,
+      });
+    } catch (error) {
+      logger.error(`Failed to delete job and error is: ${error}`);
+      console.error(`Failed to delete job and error is: ${error}`);
+      next(error);
     }
+  }
 
+  async updateJobStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      if (Array.isArray(id)) {
+        throw new Error("Invalid identifier parameter");
+      }
+      const { status } = req.body as { status: string };
+      const updatedJob = await jobService.updateStatus(id, status);
+
+      res.status(200).json({
+        success: true,
+        message: `Job Status has been changed`,
+        updatedJob,
+      });
+    } catch (error) {
+      logger.error(`Failed to update job status and error is: ${error}`);
+      console.error(`Failed to update job status and error is: ${error}`);
+      next(error);
+    }
+  }
 }
 
-export const JobController = new JobControllerClass()
+export const JobController = new JobControllerClass();
