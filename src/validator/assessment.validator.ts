@@ -359,7 +359,7 @@ export const updateAssessmentValidator = [
 ];
 
 export const getAssessmentByIdValidator = [
-    param('id')
+    param('assessmentId')
         .isMongoId()
         .withMessage('Please provide a valid assessment ID'),
 ];
@@ -372,13 +372,13 @@ export const getAssessmentByUniqueIdValidator = [
 ];
 
 export const deleteAssessmentValidator = [
-    param('id')
+    param('assessmentId')
         .isMongoId()
         .withMessage('Please provide a valid assessment ID'),
 ];
 
 export const updateAssessmentStatusValidator = [
-    param('id')
+    param('assessmentId')
         .isMongoId()
         .withMessage('Please provide a valid assessment ID'),
 
