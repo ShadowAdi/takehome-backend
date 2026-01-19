@@ -44,6 +44,8 @@ export interface IAssessment extends Document {
         };
     };
 
+    uniqueId: string;
+
     limitations?: string;
 
     evaluation?: string;

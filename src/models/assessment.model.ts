@@ -17,6 +17,12 @@ const AssessmentSchema = new Schema<IAssessment>(
             ref: 'Job',
         },
 
+        uniqueId: {
+            type: String,
+            required: true,
+            index: true,
+        },
+
         problem_description: {
             type: String,
             required: true,
