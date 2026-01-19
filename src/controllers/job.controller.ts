@@ -79,6 +79,25 @@ class JobControllerClass {
         }
     }
 
+    async deleteJob(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            if (Array.isArray(id)) {
+                throw new Error("Invalid identifier parameter");
+            }
+            const message = await jobService.deleteJob(id);
+
+            res.status(200).json({
+                success: true,
+                message
+            });
+        } catch (error) {
+            logger.error(`Failed to delete job and error is: ${error}`)
+            console.error(`Failed to delete job and error is: ${error}`)
+            next(error);
+        }
+    }
+
 }
 
 export const JobController = new JobControllerClass()
