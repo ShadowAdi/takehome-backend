@@ -115,6 +115,7 @@ class AssessmentService {
                 jobId: jobId,
                 uniqueId: uniqueJobId,
                 companyId: companyId,
+                type:"manual"
             });
 
             return assessment;
@@ -183,6 +184,7 @@ class AssessmentService {
                 jobId: jobId,
                 uniqueId: uniqueJobId,
                 companyId: companyId,
+                type:"manual"
             });
 
             return assessment;
@@ -347,7 +349,10 @@ class AssessmentService {
 
             const assessmentUpdated = await Assessment.findByIdAndUpdate(
                 assessmentId,
-                payload,
+                {
+                    ...payload,
+                    type:"manual"
+                },
                 {
                     new: true,
                 },
