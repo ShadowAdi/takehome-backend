@@ -387,6 +387,10 @@ export const updateAssessmentStatusValidator = [
         .withMessage('Status is required')
         .isIn(['draft', 'active', 'closed'])
         .withMessage('Status must be one of: draft, active, closed'),
+
+    body('companyId')
+        .isMongoId()
+        .withMessage('Please provide a valid company ID'),
 ];
 
 export const getAssessmentsByJobIdValidator = [

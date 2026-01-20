@@ -8,7 +8,8 @@ import {
     getAssessmentByUniqueIdValidator,
     deleteAssessmentValidator,
     getAssessmentsByJobIdValidator,
-    getAssessmentsByCompanyIdValidator
+    getAssessmentsByCompanyIdValidator,
+    updateAssessmentStatusValidator
 } from '../validator/assessment.validator';
 
 export const assessmentRouter = Router();
@@ -35,3 +36,5 @@ assessmentRouter.patch('/:assessmentId', updateAssessmentValidator, validate, As
 
 // Delete assessment
 assessmentRouter.delete('/:assessmentId', deleteAssessmentValidator, validate, AssessmentController.deleteAssessment);
+
+assessmentRouter.patch('update/:assessmentId', updateAssessmentStatusValidator, validate, AssessmentController.updateAssessmentStatus);
