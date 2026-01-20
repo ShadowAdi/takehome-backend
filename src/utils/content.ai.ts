@@ -112,12 +112,15 @@ export const getAiContent =  (job: CreateJobDTO, instructionForAi: string) => {
     
     === JSON OUTPUT SCHEMA (STRICT) ===
     
+    IMPORTANT: All text fields MUST be strings, NOT arrays. 
+    If you have multiple items for a field like "instructions", join them with newline characters (\n).
+    
     {
       "title": "string (clear, specific, not intimidating)",
       "problem_description": "string (2–3 sentences: what to build and why it matters)",
       "allowedTechStack": "string (must align with job tech stack)",
-      "instructions": "string (4–6 numbered, concrete steps)",
-      "constraints": "string (scope limits + AI policy)",
+      "instructions": "string (4–6 numbered, concrete steps - join with \\n if multiple)",
+      "constraints": "string (scope limits + AI policy - join with \\n if multiple)",
       "expectedDurationHours": number,
       "submissionDeadlineDays": number,
       "submissionRequirements": {
@@ -128,7 +131,7 @@ export const getAiContent =  (job: CreateJobDTO, instructionForAi: string) => {
         "otherUrls": [],
         "additionalInfo": { "required": false, "placeholder": "What you would improve with more time", "maxLength": 200 }
       },
-      "limitations": "string (explicitly state what is intentionally out of scope)",
+      "limitations": "string (explicitly state what is intentionally out of scope - join with \\n if multiple)",
       "evaluation": "string (concise criteria; max 5 points, semicolon-separated)"
     }
     
@@ -230,12 +233,15 @@ Include this sentence in constraints:
 
 === JSON OUTPUT SCHEMA (STRICT) ===
 
+IMPORTANT: All text fields MUST be strings, NOT arrays. 
+If you have multiple items for a field like "instructions", join them with newline characters (\n).
+
 {
   "title": string,
   "problem_description": string,
   "allowedTechStack": string,
-  "instructions": string,
-  "constraints": string,
+  "instructions": "string (join with \\n if multiple lines)",
+  "constraints": "string (join with \\n if multiple lines)",
   "expectedDurationHours": number,
   "submissionDeadlineDays": number,
   "submissionRequirements": {
@@ -246,8 +252,8 @@ Include this sentence in constraints:
     "otherUrls": [],
     "additionalInfo": { "required": boolean, "placeholder": string, "maxLength": number }
   },
-  "limitations": string,
-  "evaluation": string
+  "limitations": "string (join with \\n if multiple lines)",
+  "evaluation": "string (join with \\n if multiple lines)"
 }
 
 ---

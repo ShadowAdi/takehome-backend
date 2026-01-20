@@ -16,6 +16,32 @@ import { GetJobDTO } from "../types/job/job.dto";
 import { GetAssessmentPublicDTO } from "../types/assessment/assessment.dto";
 
 class AssessmentService {
+    /**
+     * Normalizes AI response by converting arrays to strings
+     */
+    private normalizeAIResponse(data: any): any {
+        const normalized = { ...data };
+        
+        // Convert array fields to strings by joining with newlines
+        const arrayFieldsToConvert = [
+            'instructions',
+            'constraints',
+            'limitations',
+            'evaluation',
+            'problem_description',
+            'allowedTechStack'
+        ];
+        
+        arrayFieldsToConvert.forEach(field => {
+            if (Array.isArray(normalized[field])) {
+                normalized[field] = normalized[field]
+                    .map((item: any) => String(item).trim())
+                    .join('\n');
+            }
+        });
+        
+        return normalized;
+    }
     private async generateAssessmentWithSarvam(
         instructionForAi: string,
         job: CreateJobDTO,
@@ -49,7 +75,8 @@ class AssessmentService {
 
             let parsedData: CreateAssessmentAIDto;
             try {
-                parsedData = JSON.parse(rawContent);
+                const rawParsed = JSON.parse(rawContent);
+                parsedData = this.normalizeAIResponse(rawParsed);
             } catch (parseError) {
                 logger.error(`Failed to parse AI response as JSON: ${parseError}`);
                 throw new Error("AI returned invalid JSON");
@@ -114,7 +141,8 @@ class AssessmentService {
 
             let parsedData: CreateAssessmentAIDto;
             try {
-                parsedData = JSON.parse(rawContent);
+                const rawParsed = JSON.parse(rawContent);
+                parsedData = this.normalizeAIResponse(rawParsed);
             } catch (parseError) {
                 logger.error(`Failed to parse AI response as JSON: ${parseError}`);
                 throw new Error("AI returned invalid JSON");
@@ -239,7 +267,7 @@ class AssessmentService {
 
             const assessment = await Assessment.create({
                 title: aiGeneratedData.title,
-                problemDescription: aiGeneratedData.problem_description,
+                problem_description: aiGeneratedData.problem_description,
                 allowedTechStack: aiGeneratedData.allowedTechStack,
                 instructions: aiGeneratedData.instructions,
                 constraints: aiGeneratedData.constraints,
@@ -251,7 +279,7 @@ class AssessmentService {
                 jobId: jobId,
                 uniqueId: uniqueJobId,
                 companyId: companyId,
-                type: "manual"
+                type: "ai"
             });
 
             return assessment;
