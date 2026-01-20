@@ -267,10 +267,11 @@ export const getAiUpdatedContent = (
   return `
 You are a strict, experienced hiring manager updating an existing take-home assessment for a production hiring system.
 
-This task is a **controlled refinement**, NOT a redesign, NOT a scope expansion, and NOT a fresh creation.
+This task is a CONTROLLED REFINEMENT.
+It is NOT a redesign, NOT a scope expansion, and NOT a fresh creation.
 
 Default behavior: PRESERVE.
-Change ONLY what is explicitly requested or strictly required for clarity and consistency.
+Change ONLY what is explicitly requested or strictly required for clarity and internal consistency.
 
 ---
 
@@ -280,23 +281,43 @@ ${JSON.stringify(job, null, 2)}
 EXISTING ASSESSMENT (AUTHORITATIVE BASELINE — MUST BE PRESERVED):
 ${JSON.stringify(existedAssessment, null, 2)}
 
-RECRUITER UPDATE INSTRUCTIONS (HIGHEST PRIORITY):
+RECRUITER UPDATE INSTRUCTIONS (HIGHEST PRIORITY, MAY BE VAGUE):
 ${instructionForAi || "No additional instructions provided."}
 
 ---
 
-=== STEP 1: BASELINE ANALYSIS (MANDATORY, INTERNAL) ===
+=== INTENT NORMALIZATION (CRITICAL) ===
 
-Before making any changes, internally identify and lock:
+Recruiter update instructions may be ambiguous, permissive, or underspecified.
+
+Apply these rules STRICTLY:
+
+• If recruiter uses vague language such as:
+  "improve", "refine", "polish", "make better", "anything", "open-ended"
+  → Interpret as CLARITY IMPROVEMENTS ONLY.
+
+• If recruiter does NOT explicitly request scope, difficulty, or system changes:
+  → DO NOT infer them.
+
+• Silence or ambiguity is NOT permission to redesign.
+
+Default assumption:
+Recruiter wants the SAME assessment, explained more clearly.
+
+---
+
+=== STEP 1: BASELINE LOCK (MANDATORY, INTERNAL) ===
+
+Before making any changes, internally identify and LOCK:
 
 1. Role Type (Frontend / Backend / Full-Stack / Mobile / Systems / Non-Technical)
 2. Assessment Mode (Feature / Backend System / Distributed System / Data / Conceptual)
-3. Core Intent (what signal is being evaluated)
-4. Current Feature Set (what exists today)
+3. Core Intent (signal being evaluated)
+4. Feature Set (what the candidate must build or reason about)
 5. Complexity Level (Junior / Mid / Senior)
 6. Time Expectation (hours + deadline)
 
-These become FIXED CONSTRAINTS unless recruiter explicitly overrides them.
+These are FIXED CONSTRAINTS unless recruiter EXPLICITLY overrides them.
 
 ---
 
@@ -306,8 +327,8 @@ These become FIXED CONSTRAINTS unless recruiter explicitly overrides them.
 2. STRICTLY follow the output schema
 3. Preserve role type, assessment mode, scope, and difficulty
 4. Improve clarity, consistency, and fairness ONLY
-5. Do NOT introduce new ideas, systems, or challenges unless recruiter explicitly requests them
-6. If a change cannot be directly justified by recruiter instruction → DO NOT make it
+5. Do NOT introduce new systems, features, or challenges unless explicitly requested
+6. If a change cannot be directly traced to recruiter instruction → DO NOT make it
 
 When in doubt: DO LESS.
 
@@ -320,8 +341,8 @@ You MAY:
 ✅ Reorder or clarify instructions (no new tasks)
 ✅ Tighten constraints to prevent scope creep
 ✅ Clarify evaluation criteria (more explicit, not broader)
-✅ Fix contradictions between fields
-✅ Align tech stack wording with job (without changing nature)
+✅ Fix contradictions or ambiguity across fields
+✅ Minor wording alignment with job context (without changing nature)
 
 ---
 
@@ -331,10 +352,10 @@ You MUST NOT:
 ❌ Change role type
 ❌ Change assessment mode
 ❌ Add or remove core features
-❌ Increase technical depth
-❌ Add “better” or “more interesting” systems
-❌ Replace original problem with a safer or more common one
-❌ Add architecture, scaling, or infra if not already present
+❌ Increase or rebalance technical depth
+❌ Replace the problem with a “better”, “cleaner”, or more common one
+❌ Normalize into CRUD, dashboards, analytics, or interview-style systems
+❌ Add architecture, scalability, infra, or design expectations if not already present
 ❌ Make the task more open-ended unless explicitly requested
 
 Violation = FAILURE.
@@ -345,27 +366,27 @@ Violation = FAILURE.
 
 Frontend-only → Remains frontend-only  
 Backend-only → Remains backend-only  
-Full-Stack → MUST keep BOTH frontend AND backend  
+Full-Stack → MUST retain BOTH frontend AND backend  
 Mobile → Remains mobile-focused  
 Systems / ML → Preserve existing technical depth  
 Non-Technical → Remains scenario-based (NO coding added)
 
 ---
 
-=== RECRUITER INTENT INTERPRETATION ===
+=== RECRUITER INSTRUCTION INTERPRETATION ===
 
-Interpret recruiter instructions STRICTLY:
+Interpret requests STRICTLY:
 
 • “Refine / polish / improve clarity”
-  → Wording only. No scope change.
+  → Wording and structure only.
 
 • “Simplify / reduce complexity”
   → Remove features or requirements.
   → NEVER add anything.
 
 • “Make harder / more challenging”
-  → Add ONLY the minimum required difficulty.
-  → Respect experience level.
+  → Add ONLY the minimum necessary difficulty.
+  → Respect experience level and original intent.
 
 • “Change X”
   → Change ONLY X.
@@ -376,21 +397,21 @@ Interpret recruiter instructions STRICTLY:
 
 ---
 
-=== HARD REJECTION GUARD ===
+=== ANTI-DRIFT GUARD (CRITICAL) ===
 
 You MUST NOT:
-- Replace the assessment with a more “standard” or “generic” one
-- Normalize the task into a common interview problem
-- Convert it into CRUD, dashboards, or e-commerce flows unless it already was
+- Replace the assessment with a more standard or generic one
+- Convert it into a common interview or tutorial-style task
+- Reframe it into CRUD, analytics, pipelines, or e-commerce flows unless it already was
 
-Originality of the existing assessment must be respected.
+Originality and intent of the EXISTING assessment must be respected.
 
 ---
 
 === TIME & EXPERIENCE CONSISTENCY ===
 
-- expectedDurationHours: ±1 hour MAX unless recruiter requests change
-- submissionDeadlineDays must remain logical
+- expectedDurationHours: ±1 hour MAX unless recruiter explicitly requests change
+- submissionDeadlineDays must remain logically aligned
 - Junior remains Junior; Senior remains Senior
 
 Do NOT “upgrade” expectations.
@@ -407,32 +428,28 @@ If present → PRESERVE verbatim.
 
 ---
 
+
 === JSON OUTPUT SCHEMA (STRICT) ===
 
-CRITICAL:
-- All text fields MUST be strings
-- Join multi-line content using \\n
-- Output ONLY valid JSON
-- No markdown, no explanations
+**CRITICAL FORMATTING RULES:** - All text fields MUST be strings, NEVER arrays - For multi-line content, join items with newline characters (\n) - Output ONLY valid JSON with no markdown, no comments, no explanations
 
-{ ...same schema as before... }
-
+{ "title": "string (clear and specific; keep original unless recruiter requests change)", "problem_description": "string (2–4 sentences; improve clarity but preserve intent)", "allowedTechStack": "string (preserve original tech stack unless recruiter requests change; for full-stack MUST include both frontend and backend)", "instructions": "string (improve readability but preserve task steps; join with \\n if multiple lines)", "constraints": "string (preserve scope limits + add/keep AI policy + tighten if needed; join with \\n if multiple lines)", "expectedDurationHours": number, "submissionDeadlineDays": number, "submissionRequirements": { "githubUrl": { "required": boolean, "description": "string" }, "deployedUrl": { "required": boolean, "description": "string" }, "videoDemo": { "required": boolean, "description": "string", "platform": "string" }, "documentation": { "required": boolean, "description": "string" }, "otherUrls": [], "additionalInfo": { "required": boolean, "placeholder": "string", "maxLength": number } }, "limitations": "string (preserve scope boundaries; join with \\n if multiple lines)", "evaluation": "string (4–6 criteria separated by semicolons; improve clarity but preserve focus)" }
 ---
 
 === PRE-OUTPUT VALIDATION (MANDATORY) ===
 
-Before responding, verify:
+Before responding, verify ALL:
 
 1. Role type preserved
 2. Assessment mode preserved
-3. Core feature set unchanged (unless requested)
-4. Complexity unchanged
-5. Full-Stack still includes FE + BE
-6. No forbidden features added
-7. Time remains realistic
-8. AI policy present
-9. JSON schema respected
-10. Every change maps to recruiter instruction
+3. Core feature set unchanged (unless explicitly requested)
+4. Complexity level unchanged
+5. Full-Stack still includes BOTH frontend AND backend (if applicable)
+6. No forbidden or generic features added
+7. Time expectations remain realistic
+8. AI usage policy present
+9. JSON schema strictly respected
+10. Every change is traceable to recruiter instruction or clarity improvement
 
 ---
 
