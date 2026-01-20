@@ -9,7 +9,9 @@ import {
     deleteAssessmentValidator,
     getAssessmentsByJobIdValidator,
     getAssessmentsByCompanyIdValidator,
-    updateAssessmentStatusValidator
+    updateAssessmentStatusValidator,
+    updateAssessmentAiValidator,
+    generateAssessmentAiValidator
 } from '../validator/assessment.validator';
 
 export const assessmentRouter = Router();
@@ -17,7 +19,7 @@ export const assessmentRouter = Router();
 // Create assessment for a job
 assessmentRouter.post('/job/:jobId', getAssessmentsByJobIdValidator, validate, createAssessmentValidator, validate, AssessmentController.createAssessment);
 
-assessmentRouter.post('/job/generate/:jobId', AssessmentController.createAssessmentByAI);
+assessmentRouter.post('/job/generate/:jobId', generateAssessmentAiValidator, validate, AssessmentController.createAssessmentByAI);
 
 // Get all assessments by job ID
 assessmentRouter.get('/job/:jobId', getAssessmentsByJobIdValidator, validate, AssessmentController.getAllAssessmentsByJob);
@@ -33,6 +35,9 @@ assessmentRouter.get('/:assessmentId', getAssessmentByIdValidator, validate, Ass
 
 // Update assessment
 assessmentRouter.patch('/:assessmentId', updateAssessmentValidator, validate, AssessmentController.updateAssessment);
+
+assessmentRouter.patch('/update/ai/:assessmentId', updateAssessmentAiValidator, validate, AssessmentController.updateAssessmentByAi);
+
 
 // Delete assessment
 assessmentRouter.delete('/:assessmentId', deleteAssessmentValidator, validate, AssessmentController.deleteAssessment);
