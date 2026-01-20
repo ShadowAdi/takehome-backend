@@ -39,4 +39,4 @@ assessmentRouter.delete('/:assessmentId', deleteAssessmentValidator, validate, A
 
 assessmentRouter.patch('update/:assessmentId', updateAssessmentStatusValidator, validate, AssessmentController.updateAssessmentStatus);
 
-assessmentRouter.get('get-draft/:jobId', updateAssessmentStatusValidator, validate, AssessmentController.getDraftAssessments);
+assessmentRouter.get('get-draft/:jobId', getAssessmentsByJobIdValidator, validate, AssessmentController.getDraftAssessments);
