@@ -194,11 +194,11 @@ class AssessmentControllerClass {
 
     async getDraftAssessments(req: Request, res: Response, next: NextFunction) {
         try {
-            const { companyId } = req.params;
-            if (Array.isArray(companyId)) {
+            const { jobId } = req.params;
+            if (Array.isArray(jobId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { assessments, totalAssessments } = await assessmentService.getDraftAssessments(companyId);
+            const { assessments, totalAssessments } = await assessmentService.getDraftAssessments(jobId);
 
             res.status(200).json({
                 success: true,

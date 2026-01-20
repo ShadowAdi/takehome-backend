@@ -402,13 +402,13 @@ class AssessmentService {
     }
 
     public async getDraftAssessments(
-        companyId: string,
+        jobId: string,
     ) {
         try {
 
             const assessments = await Assessment.find(
                 {
-                    companyId: companyId,
+                    jobId: jobId,
                     status:"darft"
                 }
             );
