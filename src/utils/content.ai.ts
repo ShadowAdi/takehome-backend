@@ -204,33 +204,28 @@ The "constraints" field MUST include EXACTLY this sentence:
 
 === JSON OUTPUT SCHEMA (STRICT) ===
 
-CRITICAL:
-- All text fields MUST be strings
-- Join multi-line content using \\n
-- Output ONLY valid JSON
-- NO markdown, NO explanations
+**CRITICAL FORMATTING RULES:** - All text fields MUST be strings, NEVER arrays - For multi-line content, join items with newline characters (\n) - Output ONLY valid JSON with no markdown, no comments, no explanations
 
-{ ...same schema as before... }
-
+{ "title": "string (clear and specific; keep original unless recruiter requests change)", "problem_description": "string (2–4 sentences; improve clarity but preserve intent)", "allowedTechStack": "string (preserve original tech stack unless recruiter requests change; for full-stack MUST include both frontend and backend)", "instructions": "string (improve readability but preserve task steps; join with \\n if multiple lines)", "constraints": "string (preserve scope limits + add/keep AI policy + tighten if needed; join with \\n if multiple lines)", "expectedDurationHours": number, "submissionDeadlineDays": number, "submissionRequirements": { "githubUrl": { "required": boolean, "description": "string" }, "deployedUrl": { "required": boolean, "description": "string" }, "videoDemo": { "required": boolean, "description": "string", "platform": "string" }, "documentation": { "required": boolean, "description": "string" }, "otherUrls": [], "additionalInfo": { "required": boolean, "placeholder": "string", "maxLength": number } }, "limitations": "string (preserve scope boundaries; join with \\n if multiple lines)", "evaluation": "string (4–6 criteria separated by semicolons; improve clarity but preserve focus)" }
 ---
 
 === PRE-OUTPUT VALIDATION (MANDATORY) ===
 
 Before responding, verify ALL:
 
-1. Role classification applied
-2. Assessment mode chosen and respected
-3. Full-Stack includes FE + BE (if applicable)
-4. No disallowed archetypes used
-5. Scope matches experience level
-6. No forbidden features included
-7. Time estimate is honest
-8. AI policy included
-9. JSON is valid and schema-compliant
+1. ✅ Core feature set is preserved unless recruiter explicitly requested changes 
+2. ✅ Complexity level matches original (Junior/Mid/Senior) 
+3. ✅ expectedDurationHours is within +1 hour of original (unless recruiter requested change) 
+4. ✅ Full-Stack assessments still have BOTH frontend AND backend 
+5. ✅ Non-Technical assessments remain scenario-based (no code added) 
+6. ✅ No forbidden features added without explicit request 
+7. ✅ All text fields are strings (not arrays) 
+8. ✅ AI usage policy is in constraints field 
+9. ✅ Changes align with recruiter instructions (not arbitrary improvements) 
 
----
+----
 
-Respond ONLY with the JSON object.
+Respond ONLY with the JSON object. No markdown blocks. No explanations. No preamble.
 `;
 };
 
