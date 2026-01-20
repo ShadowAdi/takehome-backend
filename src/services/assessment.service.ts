@@ -497,7 +497,7 @@ class AssessmentService {
                 assessmentId,
                 {
                     title: aiGeneratedData.title,
-                    problemDescription: aiGeneratedData.problem_description,
+                    problem_description: aiGeneratedData.problem_description,
                     allowedTechStack: aiGeneratedData.allowedTechStack,
                     instructions: aiGeneratedData.instructions,
                     constraints: aiGeneratedData.constraints,
