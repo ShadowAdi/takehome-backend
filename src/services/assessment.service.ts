@@ -129,13 +129,13 @@ class AssessmentService {
             return parsedData;
         } catch (error) {
             logger.error(
-                `Failed to call the sarvam ai and create the assessment: ${error}`,
+                `Failed to call the sarvam ai and update the assessment: ${error}`,
             );
             console.error(
-                `Failed to call the sarvam ai and create the assessment: ${error}`,
+                `Failed to call the sarvam ai and update the assessment: ${error}`,
             );
             throw new AppError(
-                `Failed to call the sarvam ai and create the assessment: ${error}`,
+                `Failed to call the sarvam ai and update the assessment: ${error}`,
                 400,
             );
         }
@@ -436,7 +436,7 @@ class AssessmentService {
     public async updateAssessmentByAi(
         assessmentId: string,
         companyId: string,
-        payload: UpdateAssessmentDto,
+        instructionForAi: string
     ) {
         try {
             const assessment = await this.getSingleAssessment(assessmentId);
@@ -461,10 +461,21 @@ class AssessmentService {
                 throw new AppError(`Failed to get job by id`, 403);
             }
 
+            const aiGeneratedData = await this.updateAssessmentWithSarvam(instructionForAi, getJob, assessment)
+
             const assessmentUpdated = await Assessment.findByIdAndUpdate(
                 assessmentId,
                 {
-                    ...payload,
+                    title: aiGeneratedData.title,
+                    problemDescription: aiGeneratedData.problem_description,
+                    allowedTechStack: aiGeneratedData.allowedTechStack,
+                    instructions: aiGeneratedData.instructions,
+                    constraints: aiGeneratedData.constraints,
+                    expectedDurationHours: aiGeneratedData.expectedDurationHours,
+                    submissionDeadlineDays: aiGeneratedData.submissionDeadlineDays,
+                    submissionRequirements: aiGeneratedData.submissionRequirements,
+                    limitations: aiGeneratedData.limitations,
+                    evaluation: aiGeneratedData.evaluation,
                     type: "ai"
                 },
                 {
