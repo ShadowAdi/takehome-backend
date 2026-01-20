@@ -75,6 +75,12 @@ const AssessmentSchema = new Schema<IAssessment>(
             enum: ["draft", "active", "closed"],
             default: "draft",
         },
+
+        type:{
+            type:String,
+            enum:["manual","ai"],
+            default:"manual"
+        }
     },
     {
         timestamps: true,

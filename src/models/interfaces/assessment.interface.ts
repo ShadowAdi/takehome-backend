@@ -55,6 +55,8 @@ export interface IAssessment extends Document {
 
     status: "draft" | "active" | "closed";
 
+    type:"manual" | "ai"
+
     createdAt: Date;
     updatedAt: Date;
 }
