@@ -11,7 +11,9 @@ import { companyService } from "./company.service";
 import { jobService } from "./job.service";
 import { AI_API_KEY } from "../config/dotenv";
 import { CreateJobDTO } from "../types/job/job-create.dto";
-import { getAiContent } from "../utils/content.ai";
+import { getAiContent, getAiUpdatedContent } from "../utils/content.ai";
+import { GetJobDTO } from "../types/job/job.dto";
+import { GetAssessmentPublicDTO } from "../types/assessment/assessment.dto";
 
 class AssessmentService {
     private async generateAssessmentWithSarvam(
@@ -25,6 +27,69 @@ class AssessmentService {
                     messages: [
                         {
                             content: getAiContent(job, instructionForAi),
+                            role: "user",
+                        },
+                    ],
+                    model: "sarvam-m",
+                    max_tokens: 2000,
+                },
+                {
+                    headers: {
+                        "api-subscription-key": AI_API_KEY,
+                        "Content-Type": "application/json",
+                    },
+                    timeout: 30000,
+                },
+            );
+
+            const rawContent = response.data?.choices?.[0]?.message?.content;
+            if (!rawContent) {
+                throw new Error("No content in Sarvam response");
+            }
+
+            let parsedData: CreateAssessmentAIDto;
+            try {
+                parsedData = JSON.parse(rawContent);
+            } catch (parseError) {
+                logger.error(`Failed to parse AI response as JSON: ${parseError}`);
+                throw new Error("AI returned invalid JSON");
+            }
+
+            if (
+                !parsedData.title ||
+                !parsedData.problem_description ||
+                !parsedData.expectedDurationHours
+            ) {
+                throw new Error("AI response missing required fields");
+            }
+
+            return parsedData;
+        } catch (error) {
+            logger.error(
+                `Failed to call the sarvam ai and create the assessment: ${error}`,
+            );
+            console.error(
+                `Failed to call the sarvam ai and create the assessment: ${error}`,
+            );
+            throw new AppError(
+                `Failed to call the sarvam ai and create the assessment: ${error}`,
+                400,
+            );
+        }
+    }
+
+    private async updateAssessmentWithSarvam(
+        instructionForAi: string,
+        job: GetJobDTO,
+        existedAssessment: GetAssessmentPublicDTO
+    ): Promise<UpdateAssessmentDto> {
+        try {
+            const response = await axios.post(
+                "https://api.sarvam.ai/v1/chat/completions",
+                {
+                    messages: [
+                        {
+                            content: getAiUpdatedContent(job, instructionForAi, existedAssessment),
                             role: "user",
                         },
                     ],
@@ -115,7 +180,7 @@ class AssessmentService {
                 jobId: jobId,
                 uniqueId: uniqueJobId,
                 companyId: companyId,
-                type:"manual"
+                type: "manual"
             });
 
             return assessment;
@@ -184,7 +249,7 @@ class AssessmentService {
                 jobId: jobId,
                 uniqueId: uniqueJobId,
                 companyId: companyId,
-                type:"manual"
+                type: "manual"
             });
 
             return assessment;
@@ -351,7 +416,7 @@ class AssessmentService {
                 assessmentId,
                 {
                     ...payload,
-                    type:"manual"
+                    type: "manual"
                 },
                 {
                     new: true,
@@ -362,6 +427,55 @@ class AssessmentService {
         } catch (error: any) {
             logger.error(`Failed to update assessments: ${error.message}`);
             console.error(`Failed to update assessments: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
+    public async updateAssessmentByAi(
+        assessmentId: string,
+        companyId: string,
+        payload: UpdateAssessmentDto,
+    ) {
+        try {
+            const assessment = await this.getSingleAssessment(assessmentId);
+
+            if (!assessment) {
+                logger.error(`Failed to get assessment by id`);
+                console.error(`Failed to get assessment by id`);
+                throw new AppError(`Failed to get assessment by id`, 403);
+            }
+
+            if (String(assessment.companyId) !== companyId) {
+                logger.error(`Company id and assessment id are not same`);
+                console.error(`Company id and assessment id are not same`);
+                throw new AppError(`Company id and assessment id are not same`, 402);
+            }
+
+            const getJob = await jobService.getJob(assessment.jobId)
+
+            if (!getJob) {
+                logger.error(`Failed to get job by id`);
+                console.error(`Failed to get job by id`);
+                throw new AppError(`Failed to get job by id`, 403);
+            }
+
+            const assessmentUpdated = await Assessment.findByIdAndUpdate(
+                assessmentId,
+                {
+                    ...payload,
+                    type: "ai"
+                },
+                {
+                    new: true,
+                },
+            );
+
+            return assessmentUpdated;
+        } catch (error: any) {
+            logger.error(`Failed to update assessments by ai: ${error.message}`);
+            console.error(`Failed to update assessments by ai: ${error.message}`);
             throw error instanceof AppError
                 ? error
                 : new AppError("Internal Server Error", 500);
@@ -414,12 +528,12 @@ class AssessmentService {
             const assessments = await Assessment.find(
                 {
                     jobId: jobId,
-                    status:"darft"
+                    status: "darft"
                 }
             );
 
             return {
-                assessments:assessments,
+                assessments: assessments,
                 totalAssessments: assessments.length
             };
         } catch (error: any) {
