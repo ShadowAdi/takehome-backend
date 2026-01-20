@@ -191,6 +191,26 @@ class AssessmentControllerClass {
             next(error);
         }
     }
+
+    async getDraftAssessments(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { companyId } = req.params;
+            if (Array.isArray(companyId)) {
+                throw new AppError("Invalid identifier parameter", 400);
+            }
+            const { assessments, totalAssessments } = await assessmentService.getDraftAssessments(companyId);
+
+            res.status(200).json({
+                success: true,
+                assessments: assessments,
+                totalAssessments
+            });
+        } catch (error) {
+            logger.error(`Failed to get draft assessment: ${error}`);
+            console.error(`Failed to get draft assessment: ${error}`);
+            next(error);
+        }
+    }
 }
 
 export const AssessmentController = new AssessmentControllerClass();
