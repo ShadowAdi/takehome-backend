@@ -14,7 +14,6 @@ export const SubmissionRequirementsSchema = new Schema(
             required: { type: Boolean, default: false },
             platform: {
                 type: String,
-                enum: ["loom", "youtube", "any"],
             },
             description: { type: String },
         },

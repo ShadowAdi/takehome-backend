@@ -2,7 +2,7 @@ import { GetAssessmentPublicDTO } from "../types/assessment/assessment.dto"
 import { CreateJobDTO } from "../types/job/job-create.dto"
 import { GetJobDTO } from "../types/job/job.dto"
 
-export const getAiContent = async (job: CreateJobDTO, instructionForAi: string) => {
+export const getAiContent =  (job: CreateJobDTO, instructionForAi: string) => {
   return `
     You are a pragmatic and experienced engineering hiring manager.
     

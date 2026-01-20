@@ -65,14 +65,16 @@ class AssessmentService {
 
             return parsedData;
         } catch (error) {
-            logger.error(
-                `Failed to call the sarvam ai and create the assessment: ${error}`,
-            );
-            console.error(
-                `Failed to call the sarvam ai and create the assessment: ${error}`,
-            );
+            if (axios.isAxiosError(error)) {
+                console.error("STATUS:", error.response?.status);
+                console.error("DATA:", JSON.stringify(error.response?.data, null, 2));
+                console.error("HEADERS:", error.response?.headers);
+            } else {
+                console.error(error);
+            }
+
             throw new AppError(
-                `Failed to call the sarvam ai and create the assessment: ${error}`,
+                "Sarvam AI request failed. Check logs for details.",
                 400,
             );
         }

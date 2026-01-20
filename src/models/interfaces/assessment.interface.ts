@@ -25,7 +25,7 @@ export interface IAssessment extends Document {
 
         videoDemo?: {
             required: boolean;
-            platform: 'loom' | 'youtube' | 'any';
+            platform: string;
             description: string;
         };
 
