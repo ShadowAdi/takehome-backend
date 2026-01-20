@@ -400,6 +400,31 @@ class AssessmentService {
                 : new AppError("Internal Server Error", 500);
         }
     }
+
+    public async getDraftAssessments(
+        companyId: string,
+    ) {
+        try {
+
+            const assessments = await Assessment.find(
+                {
+                    companyId: companyId,
+                    status:"darft"
+                }
+            );
+
+            return {
+                assessments:assessments,
+                totalAssessments: assessments.length
+            };
+        } catch (error: any) {
+            logger.error(`Failed to get all assessments status: ${error.message}`);
+            console.error(`Failed to get all assessments status: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
 }
 
 export const assessmentService = new AssessmentService();
