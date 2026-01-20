@@ -165,6 +165,44 @@ Exceptions: Feature becomes allowed ONLY if:
 
 ---
 
+=== ASSESSMENT MODE (MANDATORY) ===
+
+Before designing the assessment, determine the PRIMARY assessment mode based on the job description and recruiter intent.
+
+Choose ONE:
+
+1. **Feature Implementation**
+   - Candidate builds a concrete feature end-to-end
+   - Suitable for frontend, junior full-stack, product-heavy roles
+   - Example: "Build a task management flow"
+
+2. **Backend System Design (Hands-on)**
+   - Candidate designs and partially implements a backend system
+   - Focus on data models, APIs, event flows, and trade-offs
+   - UI is optional or explicitly forbidden
+   - Example: "Design a scalable notification service"
+
+3. **Distributed / Event-Driven System**
+   - Candidate builds a simplified version of a real-world distributed system
+   - Focus on async flows, idempotency, failure handling
+   - Implementation may be partial or mocked
+   - Example: "Event-driven order processing system"
+
+4. **Data / Algorithmic System**
+   - Candidate focuses on data structures, querying, ranking, or throughput
+   - Example: "Design search autocomplete with ranking and caching"
+
+5. **Conceptual System Design + Minimal Code**
+   - Candidate provides architecture + selective code snippets
+   - Suitable when full implementation would be unrealistic
+   - Example: "Design a scalable search bar backend with APIs and data flow"
+
+Rules:
+- For Backend, Systems, or Senior roles → prefer modes 2–5
+- For Junior roles → mode 1 or simplified mode 2 only
+- Dashboards and generic CRUD are allowed ONLY in mode 1
+
+
 === MANDATORY AI USAGE POLICY ===
 
 The "constraints" field MUST include this exact statement:
@@ -398,6 +436,46 @@ Do NOT add these to existing assessments unless recruiter explicitly asks:
 **If original assessment targets Senior (7+ years):**
 - Preserve architectural and design depth
 - Maintain open-ended nature and complexity
+
+---
+
+
+=== ASSESSMENT MODE (MANDATORY) ===
+
+Before designing the assessment, determine the PRIMARY assessment mode based on the job description and recruiter intent.
+
+Choose ONE:
+
+1. **Feature Implementation**
+   - Candidate builds a concrete feature end-to-end
+   - Suitable for frontend, junior full-stack, product-heavy roles
+   - Example: "Build a task management flow"
+
+2. **Backend System Design (Hands-on)**
+   - Candidate designs and partially implements a backend system
+   - Focus on data models, APIs, event flows, and trade-offs
+   - UI is optional or explicitly forbidden
+   - Example: "Design a scalable notification service"
+
+3. **Distributed / Event-Driven System**
+   - Candidate builds a simplified version of a real-world distributed system
+   - Focus on async flows, idempotency, failure handling
+   - Implementation may be partial or mocked
+   - Example: "Event-driven order processing system"
+
+4. **Data / Algorithmic System**
+   - Candidate focuses on data structures, querying, ranking, or throughput
+   - Example: "Design search autocomplete with ranking and caching"
+
+5. **Conceptual System Design + Minimal Code**
+   - Candidate provides architecture + selective code snippets
+   - Suitable when full implementation would be unrealistic
+   - Example: "Design a scalable search bar backend with APIs and data flow"
+
+Rules:
+- For Backend, Systems, or Senior roles → prefer modes 2–5
+- For Junior roles → mode 1 or simplified mode 2 only
+- Dashboards and generic CRUD are allowed ONLY in mode 1
 
 ---
 
