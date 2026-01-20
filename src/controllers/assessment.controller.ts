@@ -171,6 +171,27 @@ class AssessmentControllerClass {
         }
     }
 
+    async updateAssessmentByAi(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { assessmentId } = req.params;
+            if (Array.isArray(assessmentId)) {
+                throw new AppError("Invalid identifier parameter", 400);
+            }
+            const { instructionForAi, companyId }: { instructionForAi: string, companyId: string } = req.body;
+            const assessment = await assessmentService.updateAssessmentByAi(assessmentId, companyId, instructionForAi);
+
+            res.status(200).json({
+                success: true,
+                message: "Assessment updated successfully",
+                data: assessment,
+            });
+        } catch (error) {
+            logger.error(`Failed to update assessment: ${error}`);
+            console.error(`Failed to update assessment: ${error}`);
+            next(error);
+        }
+    }
+
     async updateAssessmentStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { assessmentId } = req.params;
