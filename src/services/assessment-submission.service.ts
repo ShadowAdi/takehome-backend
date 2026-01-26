@@ -100,7 +100,7 @@ class AssessmentSubmissionServiceClass {
                 assessmentId: assessmentId,
                 companyId: getAssignment.companyId,
                 jobId: getAssignment.jobId,
-                status:"submitted"
+                status: "submitted"
             })
             return submission
         } catch (error) {
@@ -131,7 +131,7 @@ class AssessmentSubmissionServiceClass {
         }
     }
 
-      public async getSubmission(submissionId: string, companyId: string) {
+    public async getSubmission(submissionId: string, companyId: string) {
         try {
             const submissionFound = await AssessmentSubmission.findOne({
                 _id: submissionId,
