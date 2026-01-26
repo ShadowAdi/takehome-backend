@@ -147,6 +147,29 @@ class AssessmentSubmissionServiceClass {
             throw new AppError(`Failed to get submission by id:${submissionId}`, 500)
         }
     }
+
+    public async rejectSubmission(submissionId: string, companyId: string, feedback?: string, score?: number) {
+        try {
+            const submissionFound = await this.getSubmission(submissionId, companyId)
+            if (!submissionFound) {
+                logger.error(`Failed to get submission for the id: ${submissionId} and the company id: ${companyId}`)
+            }
+            await AssessmentSubmission.updateOne({
+                _id: submissionId,
+                companyId: companyId,
+            }, {
+                status: "rejected",
+                score,
+                feedback
+            })
+
+            return "Submission has been rejected"
+        } catch (error) {
+            console.error(`Failed to reject submission by id:${submissionId} : ${error}`)
+            logger.error(`Failed to reject submission by id:${submissionId} : ${error}`)
+            throw new AppError(`Failed to reject submission by id:${submissionId}`, 500)
+        }
+    }
 }
 
 export const assessmentSubmissionService = new AssessmentSubmissionServiceClass();
