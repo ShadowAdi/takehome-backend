@@ -3,12 +3,38 @@ import { logger } from "../config/logger";
 import { submissionService } from "../services/submission.service";
 import { AppError } from "../utils/AppError";
 import { AssessmentSubmissionUpdateDTO } from "../types/assessment-submission/assessment-submission-update.dto";
+import { AssessmentSubmissionCreateDTO } from "../types/assessment-submission/assessment-submission-create.dto";
 
 class SubmissionControllerClass {
+    // Public route - anyone can submit
+    async createSubmission(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { assessmentId } = req.params;
+            const submissionData: AssessmentSubmissionCreateDTO = req.body;
+
+            if (Array.isArray(assessmentId)) {
+                throw new AppError("Invalid identifier parameter", 400);
+            }
+
+            const submission = await submissionService.submitSubmission(submissionData, assessmentId);
+
+            res.status(201).json({
+                success: true,
+                message: "Submission created successfully",
+                data: submission,
+            });
+        } catch (error) {
+            logger.error(`Failed to create submission: ${error}`);
+            console.error(`Failed to create submission: ${error}`);
+            next(error);
+        }
+    }
+
+    // Authenticated route - get companyId from req.user
     async getAllSubmissions(req: Request, res: Response, next: NextFunction) {
         try {
             const { assessmentId } = req.params;
-            const { companyId } = req.body;
+            const companyId = req.user?.companyId;
 
             if (Array.isArray(assessmentId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -35,7 +61,7 @@ class SubmissionControllerClass {
     async getSubmissionById(req: Request, res: Response, next: NextFunction) {
         try {
             const { submissionId } = req.params;
-            const { companyId } = req.body;
+            const companyId = req.user?.companyId;
 
             if (Array.isArray(submissionId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -62,7 +88,8 @@ class SubmissionControllerClass {
     async evaluateSubmission(req: Request, res: Response, next: NextFunction) {
         try {
             const { submissionId } = req.params;
-            const { companyId, ...evaluationData }: { companyId: string } & AssessmentSubmissionUpdateDTO = req.body;
+            const companyId = req.user?.companyId;
+            const evaluationData: AssessmentSubmissionUpdateDTO = req.body;
 
             if (Array.isArray(submissionId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -93,7 +120,8 @@ class SubmissionControllerClass {
     async rejectSubmission(req: Request, res: Response, next: NextFunction) {
         try {
             const { submissionId } = req.params;
-            const { companyId, feedback, score, messageToCandidate } = req.body;
+            const companyId = req.user?.companyId;
+            const { feedback, score, messageToCandidate } = req.body;
 
             if (Array.isArray(submissionId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -126,7 +154,8 @@ class SubmissionControllerClass {
     async selectSubmission(req: Request, res: Response, next: NextFunction) {
         try {
             const { submissionId } = req.params;
-            const { companyId, feedback, score, messageToCandidate, nextSteps } = req.body;
+            const companyId = req.user?.companyId;
+            const { feedback, score, messageToCandidate, nextSteps } = req.body;
 
             if (Array.isArray(submissionId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -160,7 +189,8 @@ class SubmissionControllerClass {
     async holdSubmission(req: Request, res: Response, next: NextFunction) {
         try {
             const { submissionId } = req.params;
-            const { companyId, feedback, score, messageToCandidate } = req.body;
+            const companyId = req.user?.companyId;
+            const { feedback, score, messageToCandidate } = req.body;
 
             if (Array.isArray(submissionId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -193,7 +223,8 @@ class SubmissionControllerClass {
     async updateSubmissionStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { submissionId } = req.params;
-            const { companyId, status } = req.body;
+            const companyId = req.user?.companyId;
+            const { status } = req.body;
 
             if (Array.isArray(submissionId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -233,7 +264,8 @@ class SubmissionControllerClass {
     async addNextSteps(req: Request, res: Response, next: NextFunction) {
         try {
             const { submissionId } = req.params;
-            const { companyId, nextSteps } = req.body;
+            const companyId = req.user?.companyId;
+            const { nextSteps } = req.body;
 
             if (Array.isArray(submissionId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -268,7 +300,8 @@ class SubmissionControllerClass {
     async getSubmissionsByStatus(req: Request, res: Response, next: NextFunction) {
         try {
             const { assessmentId } = req.params;
-            const { companyId, status } = req.body;
+            const companyId = req.user?.companyId;
+            const { status } = req.body;
 
             if (Array.isArray(assessmentId)) {
                 throw new AppError("Invalid identifier parameter", 400);
@@ -308,7 +341,7 @@ class SubmissionControllerClass {
     async getSubmissionStats(req: Request, res: Response, next: NextFunction) {
         try {
             const { assessmentId } = req.params;
-            const { companyId } = req.body;
+            const companyId = req.user?.companyId;
 
             if (Array.isArray(assessmentId)) {
                 throw new AppError("Invalid identifier parameter", 400);

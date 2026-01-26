@@ -1,45 +1,90 @@
 import { body, param } from 'express-validator/lib/middlewares/validation-chain-builders.js';
 
-export const getAllSubmissionsValidator = [
+// Public route - no companyId needed
+export const createSubmissionValidator = [
     param('assessmentId')
         .notEmpty()
         .withMessage('Assessment ID is required')
         .isMongoId()
         .withMessage('Please provide a valid assessment ID'),
 
-    body('companyId')
+    body('candidateInfo.name')
         .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID')
+        .withMessage('Candidate name is required')
+        .isLength({ min: 2, max: 100 })
+        .withMessage('Name must be between 2 and 100 characters')
+        .trim(),
+
+    body('candidateInfo.email')
+        .notEmpty()
+        .withMessage('Candidate email is required')
+        .isEmail()
+        .withMessage('Please provide a valid email address')
+        .normalizeEmail(),
+
+    body('candidateInfo.phone')
+        .optional()
+        .isLength({ min: 1, max: 20 })
+        .withMessage('Phone must be between 1 and 20 characters')
+        .trim(),
+
+    body('candidateInfo.resume')
+        .optional()
+        .isURL()
+        .withMessage('Resume must be a valid URL'),
+
+    body('submissionData.githubUrl')
+        .optional()
+        .isURL()
+        .withMessage('GitHub URL must be a valid URL'),
+
+    body('submissionData.deployedUrl')
+        .optional()
+        .isURL()
+        .withMessage('Deployed URL must be a valid URL'),
+
+    body('submissionData.videoDemoUrl')
+        .optional()
+        .isURL()
+        .withMessage('Video demo URL must be a valid URL'),
+
+    body('submissionData.documentationUrl')
+        .optional()
+        .isURL()
+        .withMessage('Documentation URL must be a valid URL'),
+
+    body('submissionData.additionalInfo')
+        .optional()
+        .isLength({ max: 5000 })
+        .withMessage('Additional info must be under 5000 characters')
+        .trim()
 ];
 
+// Authenticated route - companyId comes from req.user
+export const getAllSubmissionsValidator = [
+    param('assessmentId')
+        .notEmpty()
+        .withMessage('Assessment ID is required')
+        .isMongoId()
+        .withMessage('Please provide a valid assessment ID')
+];
+
+// Authenticated route - companyId comes from req.user
 export const getSubmissionByIdValidator = [
     param('submissionId')
         .notEmpty()
         .withMessage('Submission ID is required')
         .isMongoId()
-        .withMessage('Please provide a valid submission ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID')
+        .withMessage('Please provide a valid submission ID')
 ];
 
+// Authenticated route - companyId comes from req.user
 export const evaluateSubmissionValidator = [
     param('submissionId')
         .notEmpty()
         .withMessage('Submission ID is required')
         .isMongoId()
         .withMessage('Please provide a valid submission ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
 
     body('status')
         .optional()
@@ -146,18 +191,13 @@ export const evaluateSubmissionValidator = [
         .toDate()
 ];
 
+// Authenticated route - companyId comes from req.user
 export const rejectSubmissionValidator = [
     param('submissionId')
         .notEmpty()
         .withMessage('Submission ID is required')
         .isMongoId()
         .withMessage('Please provide a valid submission ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
 
     body('feedback')
         .optional()
@@ -178,18 +218,13 @@ export const rejectSubmissionValidator = [
         .trim()
 ];
 
+// Authenticated route - companyId comes from req.user
 export const selectSubmissionValidator = [
     param('submissionId')
         .notEmpty()
         .withMessage('Submission ID is required')
         .isMongoId()
         .withMessage('Please provide a valid submission ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
 
     body('feedback')
         .optional()
@@ -274,18 +309,13 @@ export const selectSubmissionValidator = [
         .toDate()
 ];
 
+// Authenticated route - companyId comes from req.user
 export const holdSubmissionValidator = [
     param('submissionId')
         .notEmpty()
         .withMessage('Submission ID is required')
         .isMongoId()
         .withMessage('Please provide a valid submission ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
 
     body('feedback')
         .optional()
@@ -306,18 +336,13 @@ export const holdSubmissionValidator = [
         .trim()
 ];
 
+// Authenticated route - companyId comes from req.user
 export const updateSubmissionStatusValidator = [
     param('submissionId')
         .notEmpty()
         .withMessage('Submission ID is required')
         .isMongoId()
         .withMessage('Please provide a valid submission ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
 
     body('status')
         .notEmpty()
@@ -326,18 +351,13 @@ export const updateSubmissionStatusValidator = [
         .withMessage('Status must be one of: submitted, under_review, rejected, selected, on_hold')
 ];
 
+// Authenticated route - companyId comes from req.user
 export const addNextStepsValidator = [
     param('submissionId')
         .notEmpty()
         .withMessage('Submission ID is required')
         .isMongoId()
         .withMessage('Please provide a valid submission ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
 
     body('nextSteps.type')
         .notEmpty()
@@ -405,18 +425,13 @@ export const addNextStepsValidator = [
         .toDate()
 ];
 
+// Authenticated route - companyId comes from req.user
 export const getSubmissionsByStatusValidator = [
     param('assessmentId')
         .notEmpty()
         .withMessage('Assessment ID is required')
         .isMongoId()
         .withMessage('Please provide a valid assessment ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
 
     body('status')
         .notEmpty()
@@ -425,16 +440,11 @@ export const getSubmissionsByStatusValidator = [
         .withMessage('Status must be one of: submitted, under_review, rejected, selected, on_hold')
 ];
 
+// Authenticated route - companyId comes from req.user
 export const getSubmissionStatsValidator = [
     param('assessmentId')
         .notEmpty()
         .withMessage('Assessment ID is required')
         .isMongoId()
-        .withMessage('Please provide a valid assessment ID'),
-
-    body('companyId')
-        .notEmpty()
-        .withMessage('Company ID is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID')
+        .withMessage('Please provide a valid assessment ID')
 ];

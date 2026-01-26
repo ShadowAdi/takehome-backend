@@ -33,6 +33,7 @@ class AuthServiceClass {
             const payload = {
                 company_email: isCompanyExists.company_email,
                 id: isCompanyExists._id,
+                companyId: isCompanyExists._id,
             };
 
 
