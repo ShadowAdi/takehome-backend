@@ -29,30 +29,30 @@ class AuthControllerClass {
 
     async getAuthenticatedUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const userEmail = req.user.company_email;
+            const company_email = req.user?.email;
             
-            if (!userEmail) {
-                logger.error(`User email not found in request`);
-                console.error(`User email not found in request`);
-                throw new Error("User email not found in request");
+            if (!company_email) {
+                logger.error(`Company email not found in request`);
+                console.error(`Company email not found in request`);
+                throw new Error("Company email not found in request");
             }
 
-            logger.info(`Fetching authenticated user data for: ${userEmail}`);
-            console.log(`Fetching authenticated user data for: ${userEmail}`);
+            logger.info(`Fetching authenticated Company data for: ${company_email}`);
+            console.log(`Fetching authenticated Company data for: ${company_email}`);
             
-            const user = await AuthService.getAuthenticatedCompany(userEmail);
+            const user = await AuthService.getAuthenticatedCompany(company_email);
             
-            logger.info(`Authenticated user data retrieved successfully: ${user._id}`);
-            console.log(`Authenticated user data retrieved successfully: ${user._id}`);
+            logger.info(`Authenticated Company data retrieved successfully: ${user._id}`);
+            console.log(`Authenticated Company data retrieved successfully: ${user._id}`);
             
             res.status(200).json({
                 success: true,
-                message: "User data retrieved successfully",
+                message: "Company data retrieved successfully",
                 data: user
             });
         } catch (error: any) {
-            logger.error(`Failed to get authenticated user controller: ${error.message}`);
-            console.error(`Failed to get authenticated user controller: ${error.message}`);
+            logger.error(`Failed to get authenticated Company controller: ${error.message}`);
+            console.error(`Failed to get authenticated Company controller: ${error.message}`);
             next(error);
         }
     }
