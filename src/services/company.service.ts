@@ -108,6 +108,29 @@ class CompanyService {
         }
     }
 
+    async findCompanyByEmail(email: string) {
+        try {
+            const existsCompany = await Company.findOne({
+              company_email:email
+            }).select("+password");
+
+            if (!existsCompany) {
+                console.error(`Company does not exists ${email}`);
+                logger.error(`Company does not exists  ${email}`);
+                throw new AppError("Company does not exists", 409);
+            }
+
+            return existsCompany
+        } catch (error: any) {
+            logger.error(`Failed to get company with email:${email} and error is: ${error.message}`);
+            console.error(`Failed to get company with email:${email} and error is: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
+
     async deleteCompany(companyId: string) {
         try {
             await this.findById(companyId)

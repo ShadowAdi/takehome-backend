@@ -4,6 +4,7 @@ import { LoginCompanyDto } from "../types/auth/LoginCompanyDto";
 import { AppError } from "../utils/AppError";
 import jwt from "jsonwebtoken";
 import { companyService } from "./company.service";
+import { comparePassword } from "../utils/password";
 
 
 class AuthServiceClass {
@@ -17,21 +18,21 @@ class AuthServiceClass {
                 throw new AppError(`INTERNAL SERVER ERROR`, 500);
             }
 
-            const isUserExists = await companyService.findOneCompany(email);
-            if (!isUserExists) {
+            const isCompanyExists = await companyService.findCompanyByEmail(email);
+            if (!isCompanyExists) {
                 logger.error(`Company with mail: ${email} not found`);
                 throw new AppError(`Company with mail: ${email} not found`, 404);
             }
 
-            const hashedPassword = comparePassword(password, isUserExists.password);
+            const hashedPassword = comparePassword(password, isCompanyExists.password);
             if (!hashedPassword) {
                 logger.error(`Invalid Credentials`);
                 throw new AppError(`Invalid Credentials`, 404);
             }
 
             const payload = {
-                email: isUserExists.email,
-                id: isUserExists._id,
+                company_email: isCompanyExists.company_email,
+                id: isCompanyExists._id,
             };
 
 
@@ -41,16 +42,16 @@ class AuthServiceClass {
 
             return {
                 user: {
-                    email: isUserExists.email,
-                    id: isUserExists._id,
+                    email: isCompanyExists.email,
+                    id: isCompanyExists._id,
                 },
                 token
             };
         } catch (error) {
-            logger.error(`Failed to signin User: ${error}`);
-            console.error(`Failed to signin User: ${error}`)
+            logger.error(`Failed to signin Company: ${error}`);
+            console.error(`Failed to signin Company: ${error}`)
             throw new AppError(
-                error instanceof AppError ? error.message : "Failed to signin user",
+                error instanceof AppError ? error.message : "Failed to signin Company",
                 error instanceof AppError ? error.statusCode : 500
             );
         }
