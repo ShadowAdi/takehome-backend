@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { ISubmission } from "./interfaces/submission.interface";
 
-export const assessmentSubmissionSchema = new mongoose.Schema<ISubmission>({
+const assessmentSubmissionSchema = new mongoose.Schema<ISubmission>({
     applicant: {
         name: { type: String, required: true },
         email: { type: String, required: true },
