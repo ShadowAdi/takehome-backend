@@ -108,6 +108,27 @@ class AssessmentSubmissionServiceClass {
             throw new AppError('Failed to submit your assessment', 500)
         }
     }
+
+    public async getAllSubmissions(assessmentId: string, companyId: string) {
+        try {
+            const assessmentFound = await assessmentService.getAssessmentForCompany(assessmentId, companyId)
+
+            if (!assessmentFound) {
+                logger.error(`Assessment with ID ${assessmentId} not found`)
+                throw new AppError('Assessment not found', 404)
+            }
+
+            const allAssessments = await AssessmentSubmission.find({
+                assessmentId: assessmentId,
+                companyId: companyId
+            })
+            return allAssessments
+        } catch (error) {
+            console.error(`Failed to get all assessments: ${error}`)
+            logger.error(`Failed to get all assessments: ${error}`)
+            throw new AppError('Failed to get all assessments', 500)
+        }
+    }
 }
 
 export const assessmentSubmissionService = new AssessmentSubmissionServiceClass();

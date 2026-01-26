@@ -379,6 +379,22 @@ class AssessmentService {
         }
     }
 
+    public async getAssessmentForCompany(assessmentId: string,companyId:string) {
+        try {
+            const assessments = await Assessment.findOne({
+                id:assessmentId,
+                companyId:companyId
+            });
+            return assessments;
+        } catch (error: any) {
+            logger.error(`Failed to get assessment for company: ${error.message}`);
+            console.error(`Failed to get assessment for company: ${error.message}`);
+            throw error instanceof AppError
+                ? error
+                : new AppError("Internal Server Error", 500);
+        }
+    }
+
     public async getSingleAssessmentByUniqueId(assessmentUniqueId: string) {
         try {
             const assessment = await Assessment.findOne({
