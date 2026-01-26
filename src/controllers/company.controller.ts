@@ -3,6 +3,7 @@ import { companyService } from "../services/company.service";
 import { CreateCompanyDTO } from "../types/company/company-create.dto";
 import { UpdateCompanyDTO } from "../types/company/company-update.dto";
 import { logger } from "../config/logger";
+import { AuthService } from "../services/auth.service";
 
 class CompanyController {
     async createCompany(req: Request, res: Response, next: NextFunction) {
@@ -81,11 +82,15 @@ class CompanyController {
 
     async deleteCompany(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params;
-            if (Array.isArray(id)) {
-                throw new Error("Invalid identifier parameter");
+            const company_id = req.user?.id;
+
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                console.error(`Company id not found in request`);
+                throw new Error("Company id not found in request");
             }
-            const message = await companyService.deleteCompany(id);
+
+            const message = await companyService.deleteCompany(company_id);
 
             res.status(200).json({
                 success: true,
@@ -100,12 +105,15 @@ class CompanyController {
 
     async updateCompany(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params;
-            if (Array.isArray(id)) {
-                throw new Error("Invalid identifier parameter");
+            const company_id = req.user?.id;
+
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                console.error(`Company id not found in request`);
+                throw new Error("Company id not found in request");
             }
             const updatePayload: UpdateCompanyDTO = req.body;
-            const updatedCompany = await companyService.updateCompany(id, updatePayload);
+            const updatedCompany = await companyService.updateCompany(company_id, updatePayload);
 
             res.status(200).json({
                 success: true,
