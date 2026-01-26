@@ -3,6 +3,7 @@ import { AssessmentSubmission } from "../models/assessment-submission.model";
 import { AssessmentSubmissionCreateDTO } from "../types/assessment-submission/assessment-submission-create.dto";
 import { AssessmentSubmissionUpdateDTO } from "../types/assessment-submission/assessment-submission-update.dto";
 import { AppError } from "../utils/AppError";
+import { assessmentService } from "./assessment.service";
 
 class SubmissionServiceClass {
 
@@ -71,6 +72,41 @@ class SubmissionServiceClass {
                     400
                 );
             }
+        }
+    }
+
+     public async submitSubmission(payload: AssessmentSubmissionCreateDTO, assessmentId: string) {
+        try {
+            const getAssignment = await assessmentService.getSingleAssessment(assessmentId)
+
+            if (!getAssignment) {
+                logger.error(`Assessment with ID ${assessmentId} not found`)
+                throw new AppError('Assessment not found', 404)
+            }
+
+            if (getAssignment.status === "closed" || getAssignment.status === "draft") {
+                logger.error(`Assessment with ID ${assessmentId} is closed or in draft`)
+                throw new AppError('Assessment is closed or in draft', 400)
+            }
+
+            if (getAssignment.submissionRequirements) {
+                this.validateSubmissionRequirements(
+                    getAssignment.submissionRequirements,
+                    payload.submissionData
+                );
+            }
+
+            const submission = await AssessmentSubmission.create({
+                ...payload,
+                assessmentId: assessmentId,
+                companyId: getAssignment.companyId,
+                jobId: getAssignment.jobId,
+            })
+            return submission
+        } catch (error) {
+            console.error(`Failed to submit your assessment: ${error}`)
+            logger.error(`Failed to submit your assessment: ${error}`)
+            throw new AppError('Failed to submit your assessment', 500)
         }
     }
 
