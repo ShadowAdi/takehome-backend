@@ -14,8 +14,13 @@ class AssessmentControllerClass {
             if (Array.isArray(jobId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { payload, companyId }: { payload: CreateAssessmentDto, companyId: string } = req.body;
-            const assessment = await assessmentService.createAssessment(payload, jobId, companyId);
+            const company_id = req.user?.id;
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                throw new AppError("Company id not found in request", 401);
+            }
+            const { payload }: { payload: CreateAssessmentDto } = req.body;
+            const assessment = await assessmentService.createAssessment(payload, jobId, company_id);
 
             res.status(201).json({
                 success: true,
@@ -35,8 +40,13 @@ class AssessmentControllerClass {
             if (Array.isArray(jobId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { companyId, instructionForAi }: { companyId: string, instructionForAi: string } = req.body;
-            const assessment = await assessmentService.createAssessmentByAi(jobId, companyId, instructionForAi);
+            const company_id = req.user?.id;
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                throw new AppError("Company id not found in request", 401);
+            }
+            const { instructionForAi }: { instructionForAi: string } = req.body;
+            const assessment = await assessmentService.createAssessmentByAi(jobId, company_id, instructionForAi);
 
             res.status(201).json({
                 success: true,
@@ -72,11 +82,12 @@ class AssessmentControllerClass {
 
     async getAllAssessmentsByCompanyId(req: Request, res: Response, next: NextFunction) {
         try {
-            const { companyId } = req.params;
-            if (Array.isArray(companyId)) {
-                throw new AppError("Invalid identifier parameter", 400);
+            const company_id = req.user?.id;
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                throw new AppError("Company id not found in request", 401);
             }
-            const assessments = await assessmentService.getAllAssessmentsByCompanyId(companyId);
+            const assessments = await assessmentService.getAllAssessmentsByCompanyId(company_id);
 
             res.status(200).json({
                 success: true,
@@ -136,8 +147,12 @@ class AssessmentControllerClass {
             if (Array.isArray(assessmentId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { companyId }: { companyId: string } = req.body;
-            const result = await assessmentService.deleteAssignment(assessmentId, companyId);
+            const company_id = req.user?.id;
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                throw new AppError("Company id not found in request", 401);
+            }
+            const result = await assessmentService.deleteAssignment(assessmentId, company_id);
 
             res.status(200).json({
                 success: true,
@@ -156,8 +171,13 @@ class AssessmentControllerClass {
             if (Array.isArray(assessmentId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { payload, companyId }: { payload: UpdateAssessmentDto, companyId: string } = req.body;
-            const assessment = await assessmentService.updateAssessment(assessmentId, companyId, payload);
+            const company_id = req.user?.id;
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                throw new AppError("Company id not found in request", 401);
+            }
+            const { payload }: { payload: UpdateAssessmentDto } = req.body;
+            const assessment = await assessmentService.updateAssessment(assessmentId, company_id, payload);
 
             res.status(200).json({
                 success: true,
@@ -177,8 +197,13 @@ class AssessmentControllerClass {
             if (Array.isArray(assessmentId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { instructionForAi, companyId }: { instructionForAi: string, companyId: string } = req.body;
-            const assessment = await assessmentService.updateAssessmentByAi(assessmentId, companyId, instructionForAi);
+            const company_id = req.user?.id;
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                throw new AppError("Company id not found in request", 401);
+            }
+            const { instructionForAi }: { instructionForAi: string } = req.body;
+            const assessment = await assessmentService.updateAssessmentByAi(assessmentId, company_id, instructionForAi);
 
             res.status(200).json({
                 success: true,
@@ -198,8 +223,13 @@ class AssessmentControllerClass {
             if (Array.isArray(assessmentId)) {
                 throw new AppError("Invalid identifier parameter", 400);
             }
-            const { status, companyId }: { status: string, companyId: string } = req.body;
-            const assessment = await assessmentService.updateAssessmentStatus(assessmentId, companyId, status);
+            const company_id = req.user?.id;
+            if (!company_id) {
+                logger.error(`Company id not found in request`);
+                throw new AppError("Company id not found in request", 401);
+            }
+            const { status }: { status: string } = req.body;
+            const assessment = await assessmentService.updateAssessmentStatus(assessmentId, company_id, status);
 
             res.status(200).json({
                 success: true,
