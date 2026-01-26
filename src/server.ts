@@ -6,6 +6,7 @@ import { healthRouter } from "./routes/health.route";
 import { companyRouter } from "./routes/company.route";
 import { jobRouter } from "./routes/job.routes";
 import { assessmentRouter } from "./routes/assessment.route";
+import { submissionRouter } from "./routes/submission.route";
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use("/api/health", healthRouter);
 app.use("/api/company", companyRouter);
 app.use("/api/job", jobRouter);
 app.use("/api/assessment", assessmentRouter);
+app.use("/api/submission", submissionRouter);
 
 
 app.get('/', (_req, res) => {
