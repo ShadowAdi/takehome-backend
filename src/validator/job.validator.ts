@@ -1,12 +1,6 @@
 import { body, param } from 'express-validator/lib/middlewares/validation-chain-builders.js';
 
 export const createJobValidator = [
-    body('createdBy')
-        .notEmpty()
-        .withMessage('Company ID (createdBy) is required')
-        .isMongoId()
-        .withMessage('Please provide a valid company ID'),
-
     body('jobTitle')
         .notEmpty()
         .withMessage('Job title is required')
