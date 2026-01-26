@@ -129,6 +129,23 @@ class AssessmentSubmissionServiceClass {
             throw new AppError('Failed to get all assessments', 500)
         }
     }
+
+      public async getSubmission(submissionId: string, companyId: string) {
+        try {
+            const submissionFound = await AssessmentSubmission.findOne({
+                _id: submissionId,
+                companyId: companyId
+            })
+            if (!submissionFound) {
+                logger.error(`Failed to get submission for the id: ${submissionId} and the company id: ${companyId}`)
+            }
+            return submissionFound
+        } catch (error) {
+            console.error(`Failed to get submission by id:${submissionId} : ${error}`)
+            logger.error(`Failed to get submission by id:${submissionId} : ${error}`)
+            throw new AppError(`Failed to get submission by id:${submissionId}`, 500)
+        }
+    }
 }
 
 export const assessmentSubmissionService = new AssessmentSubmissionServiceClass();
