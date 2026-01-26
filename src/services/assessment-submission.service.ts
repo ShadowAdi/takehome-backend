@@ -100,6 +100,7 @@ class AssessmentSubmissionServiceClass {
                 assessmentId: assessmentId,
                 companyId: getAssignment.companyId,
                 jobId: getAssignment.jobId,
+                status:"submitted"
             })
             return submission
         } catch (error) {
