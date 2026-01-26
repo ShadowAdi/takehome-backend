@@ -8,7 +8,7 @@ import { comparePassword } from "../utils/password";
 
 
 class AuthServiceClass {
-    async LoginUser({
+    async LoginCompany({
         email,
         password,
     }: LoginCompanyDto) {
@@ -57,10 +57,10 @@ class AuthServiceClass {
         }
     };
 
-    async getAuthenticatedUser(email: string) {
+    async getAuthenticatedCompany(email: string) {
         try {
-            logger.info(`Fetching authenticated user with email: ${email}`);
-            console.log(`Fetching authenticated user with email: ${email}`);
+            logger.info(`Fetching authenticated company with email: ${email}`);
+            console.log(`Fetching authenticated company with email: ${email}`);
 
             const company = await companyService.findOneCompany(email);
 
