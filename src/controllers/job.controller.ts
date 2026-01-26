@@ -7,8 +7,19 @@ import { UpdateJobDTO } from "../types/job/job-update.dto";
 class JobControllerClass {
   async createJob(req: Request, res: Response, next: NextFunction) {
     try {
-      const payload: CreateJobDTO = req.body;
-      const job = await jobService.createJob(payload);
+      const company_id = req.user?.id;
+
+      if (!company_id) {
+        logger.error(`Company id not found in request`);
+        console.error(`Company id not found in request`);
+        throw new Error("Company id not found in request");
+      }
+      const payload = req.body;
+
+      const job = await jobService.createJob({
+        ...payload,
+        createdBy: company_id
+      });
 
       res.status(201).json({
         success: true,
@@ -64,8 +75,15 @@ class JobControllerClass {
       if (Array.isArray(id)) {
         throw new Error("Invalid identifier parameter");
       }
+      const company_id = req.user?.id;
+
+      if (!company_id) {
+        logger.error(`Company id not found in request`);
+        console.error(`Company id not found in request`);
+        throw new Error("Company id not found in request");
+      }
       const updatePayload: UpdateJobDTO = req.body;
-      const updatedJob = await jobService.updateJob(id, updatePayload);
+      const updatedJob = await jobService.updateJob(id, updatePayload, company_id);
 
       res.status(200).json({
         success: true,
@@ -85,7 +103,14 @@ class JobControllerClass {
       if (Array.isArray(id)) {
         throw new Error("Invalid identifier parameter");
       }
-      const message = await jobService.deleteJob(id);
+      const company_id = req.user?.id;
+
+      if (!company_id) {
+        logger.error(`Company id not found in request`);
+        console.error(`Company id not found in request`);
+        throw new Error("Company id not found in request");
+      }
+      const message = await jobService.deleteJob(id, company_id);
 
       res.status(200).json({
         success: true,
@@ -104,8 +129,15 @@ class JobControllerClass {
       if (Array.isArray(id)) {
         throw new Error("Invalid identifier parameter");
       }
+      const company_id = req.user?.id;
+
+      if (!company_id) {
+        logger.error(`Company id not found in request`);
+        console.error(`Company id not found in request`);
+        throw new Error("Company id not found in request");
+      }
       const { status } = req.body as { status: string };
-      const updatedJob = await jobService.updateStatus(id, status);
+      const updatedJob = await jobService.updateStatus(id, status, company_id);
 
       res.status(200).json({
         success: true,
@@ -121,11 +153,15 @@ class JobControllerClass {
 
   async getAllJobsByCompanyId(req: Request, res: Response, next: NextFunction) {
     try {
-      const { companyId } = req.params;
-      if (Array.isArray(companyId)) {
-        throw new Error("Invalid identifier parameter");
+      const company_id = req.user?.id;
+
+      if (!company_id) {
+        logger.error(`Company id not found in request`);
+        console.error(`Company id not found in request`);
+        throw new Error("Company id not found in request");
       }
-      const { jobs, totalJobs } = await jobService.getAllJobsByCompanyId(companyId);
+
+      const { jobs, totalJobs } = await jobService.getAllJobsByCompanyId(company_id);
       res.status(200).json({
         success: true,
         message: "Jobs retrieved successfully",

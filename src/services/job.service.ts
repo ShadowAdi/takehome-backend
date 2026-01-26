@@ -68,14 +68,21 @@ class JobService {
         }
     }
 
-    async updateJob(jobId: string, updateJob: UpdateJobDTO) {
+    async updateJob(jobId: string, updateJob: UpdateJobDTO, companyId: string) {
         try {
             const getJob = await Job.findById(jobId)
             if (!getJob) {
                 logger.error(`Job with id: ${jobId} not found`);
                 console.error(`Job with id: ${jobId} not found`);
-                throw new AppError(`Job with id: ${jobId} not found`, 500);
+                throw new AppError(`Job with id: ${jobId} not found`, 404);
             }
+
+            // Authorization check: ensure the job belongs to the company
+            if (getJob.createdBy.toString() !== companyId) {
+                logger.error(`Unauthorized: Company ${companyId} trying to update job ${jobId} owned by ${getJob.createdBy}`);
+                throw new AppError("Unauthorized: You can only update your own jobs", 403);
+            }
+
             if (updateJob.techStack && updateJob.techStack.length > 0) {
                 const mergedTechStack = Array.from(
                     new Set([...getJob.techStack, ...updateJob.techStack])
@@ -100,15 +107,19 @@ class JobService {
         }
     }
 
-    async deleteJob(jobId: string) {
+    async deleteJob(jobId: string, companyId: string) {
         try {
-            const getJob = await Job.exists({
-                _id: jobId
-            })
+            const getJob = await Job.findById(jobId);
             if (!getJob) {
                 logger.error(`Job with id: ${jobId} not found`);
                 console.error(`Job with id: ${jobId} not found`);
-                throw new AppError(`Job with id: ${jobId} not found`, 500);
+                throw new AppError(`Job with id: ${jobId} not found`, 404);
+            }
+
+            // Authorization check: ensure the job belongs to the company
+            if (getJob.createdBy.toString() !== companyId) {
+                logger.error(`Unauthorized: Company ${companyId} trying to delete job ${jobId} owned by ${getJob.createdBy}`);
+                throw new AppError("Unauthorized: You can only delete your own jobs", 403);
             }
 
             await Job.findByIdAndDelete(
@@ -125,19 +136,25 @@ class JobService {
         }
     }
 
-    async updateStatus(jobId: string, status: string) {
+    async updateStatus(jobId: string, status: string, companyId: string) {
         try {
             const getJob = await Job.findById(jobId)
             if (!getJob) {
                 logger.error(`Job with id: ${jobId} not found`);
                 console.error(`Job with id: ${jobId} not found`);
-                throw new AppError(`Job with id: ${jobId} not found`, 500);
+                throw new AppError(`Job with id: ${jobId} not found`, 404);
+            }
+
+            // Authorization check: ensure the job belongs to the company
+            if (getJob.createdBy.toString() !== companyId) {
+                logger.error(`Unauthorized: Company ${companyId} trying to update status of job ${jobId} owned by ${getJob.createdBy}`);
+                throw new AppError("Unauthorized: You can only update status of your own jobs", 403);
             }
 
             if (getJob.status === status) {
                 logger.error(`Job has already same status`);
                 console.error(`Job has already same status`);
-                throw new AppError(`Job has already same status`, 500);
+                throw new AppError(`Job has already same status`, 400);
             }
 
             const updatedJob = await Job.findByIdAndUpdate(
@@ -150,8 +167,8 @@ class JobService {
 
             return updatedJob;
         } catch (error: any) {
-            logger.error(`Failed to delete job by id:${jobId}  error: ${error.message}`);
-            console.error(`Failed to delete job by id:${jobId} error: ${error.message}`);
+            logger.error(`Failed to update job status by id:${jobId}  error: ${error.message}`);
+            console.error(`Failed to update job status by id:${jobId} error: ${error.message}`);
             throw error instanceof AppError
                 ? error
                 : new AppError("Internal Server Error", 500);
